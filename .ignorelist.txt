@@ -1,0 +1,4 @@
+.gitignore
+.git
+*.o
+assign2
