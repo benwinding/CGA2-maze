@@ -1,5 +1,6 @@
 
 PLATFORM := $(shell uname)
+$(info Platform="$(PLATFORM)")
 
 # Use pkg-config to get the right libraries for your platform
 GL_LIBS = `pkg-config --static --libs glfw3` -lGLEW -lGL
@@ -7,10 +8,10 @@ EXT =
 DEFS = `pkg-config --cflags glfw3` -std=c++11
 
 # Any other platform specific libraries here...
-ifneq (, $(findstring CYGWIN, $(PLATFORM)))
-    GL_LIBS = -lopengl32 -lglfw3 -lglew32
+ifneq (, $(findstring MINGW, $(PLATFORM)))
+    GL_LIBS = `pkg-config --static --libs glfw3 glew freeglut`
 	EXT = .exe
-    DEFS =-DWIN32
+    DEFS =-DWIN32 -std=c++11
 endif
 
 LINK += shader.o engine.o
