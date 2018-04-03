@@ -2,3 +2,5 @@ assign*
 *.o
 .idea
 cmake-build-debug
+CMakeFiles
+CMakeCache.txt

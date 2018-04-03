@@ -3,7 +3,7 @@ project(assign2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(assign2 main.cpp Shader.cpp Table.cpp Maze.cpp Viewer.cpp)
+add_executable(assign2 main.cpp Shader.cpp Maze.cpp Viewer.cpp)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(glfw3 3.2 REQUIRED)

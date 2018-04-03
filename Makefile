@@ -15,7 +15,7 @@ endif
 
 CC = g++
 EXE = assign2
-OBJS = main.o Table.o Maze.o Shader.o Viewer.o
+OBJS = main.o Maze.o Shader.o Viewer.o
 
 .PHONY: all clean
 
@@ -38,9 +38,6 @@ Shader.o : Shader.cpp Shader.hpp
 
 Viewer.o: Viewer.h Viewer.cpp InputState.h
 	$(CC) $(CPPFLAGS) -c Viewer.cpp
-
-Table.o: Table.h Table.cpp	
-	$(CC) $(CPPFLAGS) -c Table.cpp
 
 Maze.o: Maze.h Maze.cpp	
 	$(CC) $(CPPFLAGS) -c Maze.cpp

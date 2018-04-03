@@ -19,7 +19,6 @@
 
 #include "InputState.h"
 #include "Viewer.h"
-#include "Table.h"
 #include "Maze.h"
 #include "Shader.hpp"
 
@@ -30,7 +29,6 @@
 float tableWidth = 4.0f;
 float tableLength = 3.0f;
 
-Table *TheTable;
 Maze *TheMaze;
 
 int winX = 500;
@@ -141,7 +139,6 @@ void render()
 	glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
 
     // Now draw the table
-    // TheTable->render(programID);
     TheMaze->render(programID);
 }
 
@@ -254,17 +251,7 @@ int main (int argc, char **argv)
         return 0;
     }
 
-    // int rows = 4;
-    // int cols = 3;
-    // int* mazeLayout = new int[rows*cols]{
-    //     1,0,0,
-    //     0,1,0,
-    //     0,0,1,
-    //     1,1,0,
-    // };
-
     TheMaze = new Maze(mazeSize, mazeSize, mazeLayout, programID);
-    // TheMaze = new Maze(rows, cols, mazeLayout, programID);
 
     WorldCam = new WorldObjectViewer( cameraPos );
     ObjCam = new ObjectViewer( cameraPos );
@@ -285,7 +272,6 @@ int main (int argc, char **argv)
     }
 
     // Clean up
-    delete TheTable;
     delete TheMaze;
     
     glfwDestroyWindow(window);
