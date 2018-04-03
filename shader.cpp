@@ -6,7 +6,7 @@
 
 #include <GL/glew.h>
 
-#include "shader.hpp"
+#include "Shader.hpp"
 
 int CompileShader(const char *ShaderPath, const GLuint ShaderID)
 {
@@ -61,7 +61,7 @@ GLuint LoadShaders(const char * vertex_file_path,
          || !CompileShader(fragment_file_path, FragmentShaderID) ) {
         return 0;
     }
-
+    
 	// Link the program
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);

@@ -1,101 +1,241 @@
+/**
+ Scene built from cubes
+ Camera is swappable:
+ '1' - camera rotates about camera axes
+ '2' - camera rotates about world axes
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <math.h>
-#include <string>
 
-// Include the graphics engine file
-#include "engine.hpp"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#define PI 3.14159265358979323846
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
-// A constant used describing the number of vertexs needed 
-// for 1 side of a polygon with thickness
-#define VERTICES_PER_SIDE 6
+#include "InputState.h"
+#include "Viewer.h"
+#include "Table.h"
+#include "Maze.h"
+#include "Shader.hpp"
 
-// Function definitions before implementations
-float* MakeRingVertices(int sides, float radiusInner, float radiusOuter);
-int getVertexCount(int sides);
-void renderCallBack(double timeVal);
-void sendVerticesToGPU(int n);
+/**
+ Variables controlling how the scene is drawn
+*/
 
-/* 
- * Program entry point
- */
-int main(int argc, char **argv)
-{ 
-  int ndefault = 8;
-  int n;
-  // Parse program arguments
-  if(argc > 1) {
-    // Get first argument in argument array
-    char* arg1 = argv[1];
-    std::cout << "Argument 1, n_input=" << arg1 << '\n';
-    try {
-      // Try to parse the first arg as an integer
-      n = std::stoi(arg1);
-    } catch (std::exception const &e) {
-      // If it failed set as default
-      n = ndefault;
+float tableWidth = 4.0f;
+float tableLength = 3.0f;
+
+Table *TheTable;
+Maze *TheMaze;
+
+int winX = 500;
+int winY = 500;
+
+/**
+ Cameras
+*/
+WorldObjectViewer *WorldCam;
+ObjectViewer *ObjCam;
+Viewer *Camera;
+
+glm::vec3 cameraPos(0.0f, 5.0f, -12.0f);
+
+// Data structure storing mouse input info
+InputState Input;
+
+unsigned int programID;
+
+//
+// Callbacks
+//
+void key_callback(GLFWwindow* window,
+                  int key, int scancode, int action, int mods)
+{
+    if (action == GLFW_PRESS) {
+        switch(key) 
+            {
+            case GLFW_KEY_ESCAPE: // escape key pressed
+                glfwSetWindowShouldClose(window, GL_TRUE);
+                break;
+            case '1':
+                Camera = ObjCam;
+                break;
+            case '2':
+                Camera = WorldCam;
+                break;
+            default:
+                break;
+            }
     }
-  }
-  else {
-    // If no argument is provided, set default
-    n = ndefault;
-  }
-  // Display argument that was set
-  std::cout << "n=" << n << '\n';
-  // Set shader paths
-  engSetShaders("cube.vert", "cube.frag");
-  // Set up graphics engine
-  engSetup();
-  // Create and send the vertices to engine
-  sendVerticesToGPU(n);
-  // Begin the render loop and pass the render callback into it
-  engBeginRenderLoop(&renderCallBack);
+}	
+
+// Set the projection matrix. Takes into account window aspect ratio, so called
+// when the window is resized.
+void setProjection()
+{
+    glm::mat4 projection;
+    
+    projection = glm::perspective( (float)M_PI/3.0f, (float) winX / winY, 1.0f, 30.0f );
+
+	// Load it to the shader program
+	int projHandle = glGetUniformLocation(programID, "projection");
+	if (projHandle == -1) {
+		std::cout << "Uniform: projection_matrix is not an active uniform label\n";
+	}
+	glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
+}    
+
+// Called when the window is resized.
+void reshape_callback( GLFWwindow *window, int x, int y ) 
+{
+    winX = x;
+    winY = y;
+    setProjection();
+    glViewport( 0, 0, x, y );
 }
 
-/*
- Function for sending the vertices to the GPU before the render loop begins
-*/
-void sendVerticesToGPU(int n)
+void mouse_pos_callback(GLFWwindow* window, double x, double y)
 {
-  // Cube has 8 vertices at its corners
-  int CUBE_NUM_VERTICES = 8;
-  int VALS_PER_VERT = 3;
-  int verticesCount = CUBE_NUM_VERTICES * VALS_PER_VERT;
-  float vertices[verticesCount] = {
-    -1.0f, -1.0f, 1.0f ,
-    1.0f, -1.0f, 1.0f ,
-    1.0f,  1.0f, 1.0f ,
-    -1.0f,  1.0f, 1.0f ,
-    -1.0f, -1.0f, -1.0f ,
-    1.0f, -1.0f, -1.0f ,
-    1.0f,  1.0f, -1.0f ,
-    -1.0f,  1.0f, -1.0f
-  };
-  // Each square face is made up of two triangles
-  int CUBE_NUM_TRIS = 12;
-  int indicesCount = CUBE_NUM_TRIS * 3;
-  int indices[indicesCount] = {
-    0, 1, 2, 2, 3, 0,
-    1, 5, 6, 6, 2, 1,
-    5, 4, 7, 7, 6, 5,
-    4, 0, 3, 3, 7, 4,
-    3, 2, 6, 6, 7, 3,
-    4, 5, 1, 1, 0, 4
-  };
-  engSetVertexData(vertices, verticesCount, indices, indicesCount);
+    // Use a global data structure to store mouse info
+    // We can then use it however we want
+    Input.update((float)x, (float)y);
+}    
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+        Input.rMousePressed = true;
+    }
+    else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+        Input.rMousePressed = false;
+    }
+    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        Input.lMousePressed = true;
+    }
+    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        Input.lMousePressed = false;
+    }                
 }
 
-/*
-  A callback function, which gets called during the render loop
-  Used to render the vertices on the GPU
-*/
-void renderCallBack(double timeVal) 
+void render() 
 {
-  float rotation = float(timeVal * 0.5);
-  engDrawVerts(rotation*-0.3, 0, 0, 0, 1.0f, 1.0f);
-  float offsetDist = 0.38f;
-  float scaleFactor = 0.2f;
+    // Update the camera, and draw the scene.
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    Camera->update( Input );    
+
+    // First load the viewing matrix from the current camera
+    glm::mat4 viewMatrix;
+    viewMatrix = Camera->getViewMtx();
+    
+	// Load it to the shader program
+	int viewHandle = glGetUniformLocation(programID, "view");
+	if (viewHandle == -1) {
+		std::cout << "Uniform: view is not an active uniform label\n";
+	}
+	glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
+
+    // Now draw the table
+    // TheTable->render(programID);
+    TheMaze->render(programID);
+}
+
+/**
+ * Error callback for GLFW. Simply prints error message to stderr.
+ */
+static void error_callback(int error, const char* description)
+{
+    fputs(description, stderr);
+}
+
+int main (int argc, char **argv)
+{
+    GLFWwindow* window;
+    glfwSetErrorCallback(error_callback);
+    
+    if (!glfwInit()) {
+        exit(1);
+    }
+
+    // Specify that we want OpenGL 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Create the window and OpenGL context
+    window = glfwCreateWindow(winX, winY, "Modelling and viewing", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(1);
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+	
+	// Initialize GLEW
+	glewExperimental = true; // Needed for core profile
+	if (glewInit() != GLEW_OK) {
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		exit(1);
+	}
+
+	// Set up the shaders we are to use. 0 indicates error.
+	programID = LoadShaders("mview.vert", "mview.frag");
+	if (programID == 0) {
+		exit(1);
+    }
+
+    // Set OpenGL state we need for this application.
+    glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
+	glEnable(GL_DEPTH_TEST);
+	glUseProgram(programID);
+    
+    // Set up the scene and the cameras
+    setProjection();
+    
+    // TheTable = new Table( tableWidth, tableLength, programID );
+    int rows = 4;
+    int cols = 3;
+    int* mazeLayout = new int[rows*cols]{
+        1,0,0,
+        0,1,0,
+        0,0,1,
+        1,1,0,
+    };
+
+    TheMaze = new Maze(rows, cols, mazeLayout, programID);
+
+    WorldCam = new WorldObjectViewer( cameraPos );
+    ObjCam = new ObjectViewer( cameraPos );
+    Camera = ObjCam;
+
+    // Define callback functions and start main loop
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, mouse_pos_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetFramebufferSizeCallback(window, reshape_callback);
+
+    while (!glfwWindowShouldClose(window))
+    {
+        render();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // Clean up
+    delete TheTable;
+    delete TheMaze;
+    
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    exit(0);
+    
+    return 0;
 }

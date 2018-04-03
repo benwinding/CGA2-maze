@@ -3,7 +3,7 @@ project(assign2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(assign2 main.cpp shader.cpp engine.cpp)
+add_executable(assign2 main.cpp Shader.cpp Table.cpp Maze.cpp Viewer.cpp)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(glfw3 3.2 REQUIRED)
@@ -22,5 +22,5 @@ target_link_libraries(assign2
         ${GLUT_LIBRARY}
         ${GLEW_LIBRARY})
 
-configure_file(cube.frag cube.frag COPYONLY)
-configure_file(cube.vert cube.vert COPYONLY)
+configure_file(mview.frag mview.frag COPYONLY)
+configure_file(mview.vert mview.vert COPYONLY)

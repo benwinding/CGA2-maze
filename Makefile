@@ -1,36 +1,49 @@
-
 PLATFORM := $(shell uname)
 $(info Platform="$(PLATFORM)")
 
-# Use pkg-config to get the right libraries for your platform
-GL_LIBS = `pkg-config --static --libs glfw3` -lGLEW -lGL
+GL_LIBS = `pkg-config --static --libs glfw3 glew` 
 EXT = 
-DEFS = `pkg-config --cflags glfw3` -std=c++11
+CPPFLAGS = `pkg-config --cflags glfw3`
+
 
 # Any other platform specific libraries here...
 ifneq (, $(findstring MINGW, $(PLATFORM)))
     GL_LIBS = `pkg-config --static --libs glfw3 glew freeglut`
 	EXT = .exe
-    DEFS =-DWIN32 -std=c++11
 endif
 
-LINK += shader.o engine.o
 
-.PHONY:  clean
+CC = g++
+EXE = assign2
+OBJS = main.o Table.o Maze.o Shader.o Viewer.o
 
-all : assign2$(EXT)
+.PHONY: all clean
 
-assign2$(EXT) : main.o $(LINK)
-	g++ $(DEFS) -o assign2 main.o $(LINK) $(GL_LIBS)
+# If you haven't seen this before, notice how the rules
+# of the Makefile build .o files from c++ source, and then
+# build the executable from the .o files. Files are only
+# re-made if they've been modified, or something they depend
+# on has been modified.
 
-main.o : main.cpp $(LINK)
-	g++ $(DEFS) -c main.cpp
+all: $(EXE)
 
-engine.o : engine.cpp engine.hpp
-	g++ $(DEFS) -c engine.cpp
+$(EXE): $(OBJS)
+	$(CC) -o $(EXE) $(OBJS) $(GL_LIBS)
 
-shader.o : shader.cpp shader.hpp
-	g++ $(DEFS) -c shader.cpp
+main.o: main.cpp InputState.h 	
+	$(CC) $(CPPFLAGS) -c main.cpp
+
+Shader.o : Shader.cpp Shader.hpp
+	$(CC) $(CPPFLAGS) -c Shader.cpp
+
+Viewer.o: Viewer.h Viewer.cpp InputState.h
+	$(CC) $(CPPFLAGS) -c Viewer.cpp
+
+Table.o: Table.h Table.cpp	
+	$(CC) $(CPPFLAGS) -c Table.cpp
+
+Maze.o: Maze.h Maze.cpp	
+	$(CC) $(CPPFLAGS) -c Maze.cpp
 
 clean:
-	rm -f *.o assign2$(EXT)
+	rm -f *.o $(EXE)$(EXT)
