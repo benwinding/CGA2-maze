@@ -1,6 +1,8 @@
 PLATFORM := $(shell uname)
 $(info Platform="$(PLATFORM)")
 
+# LINUX
+# sudo apt-get install libglfw3-dev libglew-dev libglm-dev
 GL_LIBS = `pkg-config --static --libs glfw3 glew` 
 EXT = 
 CPPFLAGS = `pkg-config --cflags glfw3`
