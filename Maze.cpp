@@ -139,6 +139,22 @@ void Maze::SetPosition(int currentX, int currentY, float currentAngle)
     this->currentAngle = currentAngle;
 }
 
+int Maze::GetCurrentX() 
+{
+    return this->currentX;
+}
+
+int Maze::GetCurrentY() 
+{
+    return this->currentY;
+}
+
+float Maze::GetCurrentAngle() 
+{
+    return this->currentAngle;
+}
+
+
 bool Maze::IsCollision(int i, int j)
 {
     // Render Current Maze Layout

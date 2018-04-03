@@ -7,7 +7,7 @@ class Maze
 
     int currentX;
     int currentY;
-    int currentAngle;
+    float currentAngle;
 
     int* mazeLayout;
 
@@ -18,4 +18,7 @@ public:
     void render(int programID);
     void SetPosition(int currentX, int currentY, float currentAngle);
     bool IsCollision(int i, int j);
+    int GetCurrentX();
+    int GetCurrentY();
+    float GetCurrentAngle();
 };
