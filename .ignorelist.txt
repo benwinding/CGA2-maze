@@ -1,0 +1,8 @@
+.gitignore
+.git
+.idea
+*.o
+assign2
+cmake-build-debug
+CMakeFiles
+CMakeCache.txt
