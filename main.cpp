@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -199,17 +200,71 @@ int main (int argc, char **argv)
     // Set up the scene and the cameras
     setProjection();
     
-    // TheTable = new Table( tableWidth, tableLength, programID );
-    int rows = 4;
-    int cols = 3;
-    int* mazeLayout = new int[rows*cols]{
-        1,0,0,
-        0,1,0,
-        0,0,1,
-        1,1,0,
-    };
+    std::ifstream infile;
+    int mazeSize;
+    int* mazeLayout;
+    // Parse program arguments
+    if(argc > 1) {
+        // Get first argument in argument array
+        char* arg1 = argv[1];
+        std::cout << "Program input: " << arg1 << '\n';
+        try {
+            // Open file
+            infile.open(arg1);
+            // Detect maze size
+            std::string mazeSizeString; 
+            infile >> mazeSizeString;
+            mazeSize = std::stoi(mazeSizeString);
+            std::cout << "Read Maze Size: " << mazeSize << std::endl;
+            // Initialize maze layout array
+            mazeLayout = new int[mazeSize*mazeSize];
+            // Assign values to maze layout
+            std::cout << "Read Maze Configuration: " << std::endl;
+            char c;
+            int i = 0;
+            int j = 0;
+            while (infile.get(c)) 
+            {
+                int index = i*mazeSize+j;
+                if(c == '\n') 
+                    continue;
+                else if(c == ' ') 
+                    mazeLayout[index] = 0;
+                else if(c == '*') 
+                    mazeLayout[index] = 1;
+                else if(c == 'X') 
+                    mazeLayout[index] = 2;
+                // std::cout << "(" << i << "," << j << ")=" << c << std::endl;
+                std::cout << c;
+                if(i == mazeSize-1) {
+                    j++;
+                    std::cout << std::endl;
+                }
+                i = (i + 1) % (mazeSize);
+            }
+        } catch (std::exception const &e) {
+            // If bad argument is provided, exit
+            std::cout << "Bad filename recieved, exitting...";
+            return 0;
+        }
+    }
+    else {
+        // If no argument is provided, exit
+        std::cout << "No filename recieved, exitting...";
+        return 0;
+    }
 
-    TheMaze = new Maze(rows, cols, mazeLayout, programID);
+    // int rows = 4;
+    // int cols = 3;
+    // int* mazeLayout = new int[rows*cols]{
+    //     1,0,0,
+    //     0,1,0,
+    //     0,0,1,
+    //     1,1,0,
+    // };
+
+    TheMaze = new Maze(mazeSize, mazeSize, mazeLayout, programID);
+    // TheMaze = new Maze(rows, cols, mazeLayout, programID);
 
     WorldCam = new WorldObjectViewer( cameraPos );
     ObjCam = new ObjectViewer( cameraPos );
