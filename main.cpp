@@ -252,6 +252,7 @@ int main (int argc, char **argv)
     }
 
     TheMaze = new Maze(mazeSize, mazeSize, mazeLayout, programID);
+    TheMaze->SetPosition(0,0,90);
 
     WorldCam = new WorldObjectViewer( cameraPos );
     ObjCam = new ObjectViewer( cameraPos );

@@ -69,12 +69,23 @@ Maze::Maze(int gridRows, int gridCols, int* mazeLayout, int id)
     this->gridRows = gridRows;
     this->gridCols = gridCols;
 
+    this->wallThickness = 0.2;
     this->mazeX = gridRows;
     this->mazeZ = gridCols;
-    this->mazeY = cubeSize * 0.2;
+    this->mazeY = cubeSize * wallThickness;
 
     this->mazeLayout = mazeLayout;
     this->createVAO(id);
+}
+
+void drawCube(int modelUniformHandle, float tx, float ty, float tz, float sx, float sy, float sz)
+{
+    glm::mat4 model;
+    model = glm::mat4();
+    model = glm::translate( model, glm::vec3(tx,ty,tz));
+    model = glm::scale( model, glm::vec3(sx,sy,sz));
+    glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
+    glDrawElements(GL_TRIANGLES, CUBE_NUM_TRIS*3, GL_UNSIGNED_INT, 0);    
 }
 
 /**
@@ -97,12 +108,13 @@ void Maze::render(int programID)
 
     // now apply the scales to each cube forming the table
     // First the floor
-	model = glm::scale( model, glm::vec3(mazeX,mazeY,mazeZ));
-	model = glm::translate( model, glm::vec3(0, -mazeY, 0));
-	glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
-    glDrawElements(GL_TRIANGLES, CUBE_NUM_TRIS*3, GL_UNSIGNED_INT, 0);
+    drawCube(modelUniformHandle, 0, -wallThickness, 0, mazeX, wallThickness, mazeZ);
+    drawCube(modelUniformHandle, 0, -(wallThickness-1), mazeZ+wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
+    drawCube(modelUniformHandle, 0, -(wallThickness-1), -mazeZ-wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
+    drawCube(modelUniformHandle, mazeX+wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
+    drawCube(modelUniformHandle, -mazeX-wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
 
-    // mazeLayout[i*sizeY+j]
+    // Render Current Maze Layout
     int sizeI = this->gridRows;
     int sizeJ = this->gridCols;
     for(int i=0; i<sizeI; i++)
@@ -111,15 +123,29 @@ void Maze::render(int programID)
     	{
     		int gridValue = mazeLayout[i*sizeJ+j];
     		if(gridValue == 1) {
-				model = glm::mat4();
-				model = glm::translate(model, glm::vec3(i*2 - mazeX + 1, 1, j*2 - mazeZ + 1));
-				model = glm::scale(model, glm::vec3(1, 1, 1));
-				glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
-				glDrawElements(GL_TRIANGLES, CUBE_NUM_TRIS*3, GL_UNSIGNED_INT, 0);
+                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
     		}
     	}
     }
 	glBindVertexArray(0);
 
 	glFlush();
+}
+
+void Maze::SetPosition(int currentX, int currentY, float currentAngle) 
+{
+    this->currentX = currentX;
+    this->currentY = currentY;
+    this->currentAngle = currentAngle;
+}
+
+bool Maze::IsCollision(int i, int j)
+{
+    // Render Current Maze Layout
+    int sizeJ = this->gridCols;
+    int gridValue = mazeLayout[i*sizeJ+j];
+    if(gridValue == 1)
+        return true;
+    else
+        return false;
 }

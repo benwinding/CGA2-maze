@@ -3,6 +3,11 @@ class Maze
 {
     float gridRows, gridCols;
     float mazeX, mazeY, mazeZ;
+    float wallThickness;
+
+    int currentX;
+    int currentY;
+    int currentAngle;
 
     int* mazeLayout;
 
@@ -11,4 +16,6 @@ class Maze
 public:
     Maze(int gridRows, int gridCols, int* mazeLayout, int id);
     void render(int programID);
+    void SetPosition(int currentX, int currentY, float currentAngle);
+    bool IsCollision(int i, int j);
 };
