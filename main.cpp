@@ -38,17 +38,37 @@ int winY = 500;
  Cameras
 */
 Viewer *Camera;
-WorldObjectViewer *WorldCam;
 ObjectViewer *ObjCam;
 PlayerViewer *PlayerCam;
 
-glm::vec3 cameraPos(0.0f, 5.0f, -12.0f);
+glm::vec3 cameraPos(0.0f, 3.0f, -15.0f);
 glm::vec3 playerPos(3.0f, 1.0f, 0.0f);
 
 // Data structure storing mouse input info
 InputState Input;
 
 unsigned int programID;
+
+// Set the projection matrix. Takes into account window aspect ratio, so called
+// when the window is resized.
+void setProjection()
+{
+    float fov;
+    if(Camera == PlayerCam)
+        fov = (float) M_PI / 2.f;
+    else
+        fov = (float) M_PI / 3.0f;
+
+    glm::mat4 projection;
+    projection = glm::perspective(fov, (float) winX / winY, 1.0f, 30.0f );
+
+	// Load it to the shader program
+	int projHandle = glGetUniformLocation(programID, "projection");
+	if (projHandle == -1) {
+		std::cout << "Uniform: projection_matrix is not an active uniform label\n";
+	}
+	glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
+}    
 
 //
 // Callbacks
@@ -65,12 +85,11 @@ void key_callback(GLFWwindow* window,
                 break;
             case '1':
                 Camera = PlayerCam;
+                setProjection();
                 break;
             case '2':
                 Camera = ObjCam;
-                break;
-            case '3':
-                Camera = WorldCam;
+                setProjection();
                 break;
             case GLFW_KEY_UP:
                 Input.KEY_UP = true;
@@ -92,23 +111,7 @@ void key_callback(GLFWwindow* window,
                 break;
         }
     }
-}	
-
-// Set the projection matrix. Takes into account window aspect ratio, so called
-// when the window is resized.
-void setProjection()
-{
-    glm::mat4 projection;
-    
-    projection = glm::perspective( (float)M_PI/3.0f, (float) winX / winY, 1.0f, 30.0f );
-
-	// Load it to the shader program
-	int projHandle = glGetUniformLocation(programID, "projection");
-	if (projHandle == -1) {
-		std::cout << "Uniform: projection_matrix is not an active uniform label\n";
-	}
-	glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
-}    
+}   
 
 // Called when the window is resized.
 void reshape_callback( GLFWwindow *window, int x, int y ) 
@@ -224,13 +227,13 @@ int ParseAndReadMazeFile(int argc, char **argv)
             }
         } catch (std::exception const &e) {
             // If bad argument is provided, exit
-            std::cout << "Bad filename recieved, exitting...";
+            std::cout << "Bad filename recieved, exitting..." << std::endl;
             return 0;
         }
     }
     else {
         // If no argument is provided, exit
-        std::cout << "No filename recieved, exitting...";
+        std::cout << "No filename recieved, exitting..." << std::endl;
         return 0;
     }
 
@@ -292,7 +295,6 @@ int main (int argc, char **argv)
     }
     
     // Set cameras, with locations
-    WorldCam = new WorldObjectViewer( cameraPos );
     ObjCam = new ObjectViewer( cameraPos );
     PlayerCam = new PlayerViewer( playerPos );
     Camera = PlayerCam;

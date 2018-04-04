@@ -58,9 +58,6 @@ struct InputState
         return res;
     }
 
-
-
-
     // Update cursor variables based on new position x,y
     void update(float x, float y)
     {
