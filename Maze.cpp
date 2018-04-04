@@ -14,7 +14,7 @@
  * Creates a new vertex array object for a cube
  * and loads in data into a vertex attribute buffer
  */
-void Maze::createVAO(int programID)
+void Maze::createVAO()
 {
     // Cube vertex data
     float Vertices[ CUBE_NUM_VERTICES * VALS_PER_VERT ] = {
@@ -37,7 +37,6 @@ void Maze::createVAO(int programID)
         4,5,1, 1,0,4
     };
 
-    glUseProgram(programID);
 	glGenVertexArrays(1, &this->vaoHandle);
 	glBindVertexArray(this->vaoHandle);
 
@@ -62,7 +61,7 @@ void Maze::createVAO(int programID)
 }
 
 
-Maze::Maze(int gridRows, int gridCols, int* mazeLayout, int id) 
+Maze::Maze(int gridRows, int gridCols, int* mazeLayout) 
 {
     float cubeSize = 2;
 
@@ -75,7 +74,7 @@ Maze::Maze(int gridRows, int gridCols, int* mazeLayout, int id)
     this->mazeY = cubeSize * wallThickness;
 
     this->mazeLayout = mazeLayout;
-    this->createVAO(id);
+    this->createVAO();
 }
 
 void drawCube(int modelUniformHandle, float tx, float ty, float tz, float sx, float sy, float sz)
@@ -91,28 +90,25 @@ void drawCube(int modelUniformHandle, float tx, float ty, float tz, float sx, fl
 /**
  Draw the table as a set of scaled blocks.
 */  
-void Maze::render(int programID)
+void Maze::render(int shaderID1, int shaderID2)
 {
-	glUseProgram(programID);
+    int modelUniformHandle1 = glGetUniformLocation(shaderID1, "model");
+    if (modelUniformHandle1 == -1)
+        exit(1);
 
-	int modelUniformHandle = glGetUniformLocation(programID, "model");
-	if (modelUniformHandle == -1)
+	int modelUniformHandle2 = glGetUniformLocation(shaderID2, "model");
+	if (modelUniformHandle2 == -1)
 		exit(1);
 
- 	glBindVertexArray(this->vaoHandle);   
+    glBindVertexArray(this->vaoHandle);   
 
-    // We have separated modelling from viewing.
-    // Viewing (i.e. placing the camera relative to the entire table)
-    // is handled in the viewer class.
-    glm::mat4 model;
-
-    // now apply the scales to each cube forming the table
     // First the floor
-    drawCube(modelUniformHandle, 0, -wallThickness, 0, mazeX, wallThickness, mazeZ);
-    drawCube(modelUniformHandle, 0, -(wallThickness-1), mazeZ+wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
-    drawCube(modelUniformHandle, 0, -(wallThickness-1), -mazeZ-wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
-    drawCube(modelUniformHandle, mazeX+wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
-    drawCube(modelUniformHandle, -mazeX-wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
+    glUseProgram(shaderID1);
+    drawCube(modelUniformHandle1, 0, -wallThickness, 0, mazeX, wallThickness, mazeZ);
+    drawCube(modelUniformHandle1, 0, -(wallThickness-1), mazeZ+wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
+    drawCube(modelUniformHandle1, 0, -(wallThickness-1), -mazeZ-wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
+    drawCube(modelUniformHandle1, mazeX+wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
+    drawCube(modelUniformHandle1, -mazeX-wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
 
     // Render Current Maze Layout
     int sizeI = this->gridRows;
@@ -123,10 +119,12 @@ void Maze::render(int programID)
     	{
     		int gridValue = mazeLayout[i*sizeJ+j];
             if(gridValue == 1) {
-                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
+                glUseProgram(shaderID1);
+                drawCube(modelUniformHandle1, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
             }
             if(gridValue == 2) {
-                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
+                glUseProgram(shaderID1);
+                drawCube(modelUniformHandle1, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
             }
     	}
     }

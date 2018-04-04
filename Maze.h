@@ -12,10 +12,10 @@ class Maze
     int* mazeLayout;
 
 	unsigned int vaoHandle;
-	void createVAO(int programID);
+	void createVAO();
 public:
-    Maze(int gridRows, int gridCols, int* mazeLayout, int id);
-    void render(int programID);
+    Maze(int gridRows, int gridCols, int* mazeLayout);
+    void render(int shaderID1, int shaderID2);
     void SetPosition(int currentX, int currentY, float currentAngle);
     bool IsCollision(int i, int j);
     int GetCurrentX();

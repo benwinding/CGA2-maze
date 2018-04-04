@@ -47,7 +47,7 @@ glm::vec3 playerPos(3.0f, 1.0f, 0.0f);
 // Data structure storing mouse input info
 InputState Input;
 
-unsigned int programID;
+unsigned int programID1, programID2;
 
 // Set the projection matrix. Takes into account window aspect ratio, so called
 // when the window is resized.
@@ -63,7 +63,7 @@ void setProjection()
     projection = glm::perspective(fov, (float) winX / winY, 1.0f, 30.0f );
 
 	// Load it to the shader program
-	int projHandle = glGetUniformLocation(programID, "projection");
+	int projHandle = glGetUniformLocation(programID1, "projection");
 	if (projHandle == -1) {
 		std::cout << "Uniform: projection_matrix is not an active uniform label\n";
 	}
@@ -160,14 +160,14 @@ void render()
     viewMatrix = Camera->getViewMtx();
     
 	// Load it to the shader program
-	int viewHandle = glGetUniformLocation(programID, "view");
+	int viewHandle = glGetUniformLocation(programID1, "view");
 	if (viewHandle == -1) {
 		std::cout << "Uniform: view is not an active uniform label\n";
 	}
 	glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
 
     // Now draw the table
-    TheMaze->render(programID);
+    TheMaze->render(programID1, programID2);
 }
 
 /**
@@ -238,14 +238,14 @@ int ParseAndReadMazeFile(int argc, char **argv)
         return 0;
     }
 
-    TheMaze = new Maze(mazeSize, mazeSize, mazeLayout, programID);
+    TheMaze = new Maze(mazeSize, mazeSize, mazeLayout);
     TheMaze->SetPosition(0,0,90);
     return 1;
 }
 
 void PrintHelp() 
 {
-    const char * vogon_poem = R"V0G0N(
+    const char * helpScreen = R"V0G0N(
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~~~ Welcome 2 Assignment 2! ~~~
         ~~~~~~~ By Ben Winding ~~~~~~~~
@@ -264,7 +264,7 @@ void PrintHelp()
         2 = World View (Mouse enabled)
 
     )V0G0N";
-    std::cout << vogon_poem << std::endl;
+    std::cout << helpScreen << std::endl;
 }
 
 int main (int argc, char **argv)
@@ -300,16 +300,22 @@ int main (int argc, char **argv)
 		exit(1);
 	}
 
+    // Set up the shaders we are to use. 0 indicates error.
+    programID1 = LoadShaders("mview.vert", "mview.frag");
+    if (programID1 == 0) {
+        exit(1);
+    }
 	// Set up the shaders we are to use. 0 indicates error.
-	programID = LoadShaders("mview.vert", "mview.frag");
-	if (programID == 0) {
+	programID2 = LoadShaders("mview2.vert", "mview2.frag");
+	if (programID2 == 0) {
 		exit(1);
     }
+
+    glUseProgram(programID1);
 
     // Set OpenGL state we need for this application.
     glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
 	glEnable(GL_DEPTH_TEST);
-	glUseProgram(programID);
     
     // Set up the scene and the cameras
     setProjection();
