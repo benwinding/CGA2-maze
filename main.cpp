@@ -225,6 +225,7 @@ int ParseAndReadMazeFile(int argc, char **argv)
                 }
                 i = (i + 1) % (mazeSize);
             }
+            std::cout << std::endl;
         } catch (std::exception const &e) {
             // If bad argument is provided, exit
             std::cout << "Bad filename recieved, exitting..." << std::endl;

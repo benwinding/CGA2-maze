@@ -126,7 +126,7 @@ void Maze::render(int programID)
                 drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
             }
             if(gridValue == 2) {
-                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.5, 0.5, 0.5);
+                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
             }
     	}
     }
@@ -156,7 +156,6 @@ float Maze::GetCurrentAngle()
 {
     return this->currentAngle;
 }
-
 
 bool Maze::IsCollision(int i, int j)
 {
