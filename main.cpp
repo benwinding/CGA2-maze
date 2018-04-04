@@ -37,11 +37,13 @@ int winY = 500;
 /**
  Cameras
 */
+Viewer *Camera;
 WorldObjectViewer *WorldCam;
 ObjectViewer *ObjCam;
-Viewer *Camera;
+ObjectViewer *PlayerCam;
 
 glm::vec3 cameraPos(0.0f, 5.0f, -12.0f);
+glm::vec3 playerPos(3.0f, 1.0f, 0.0f);
 
 // Data structure storing mouse input info
 InputState Input;
@@ -54,21 +56,25 @@ unsigned int programID;
 void key_callback(GLFWwindow* window,
                   int key, int scancode, int action, int mods)
 {
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS) 
+    {
         switch(key) 
-            {
+        {
             case GLFW_KEY_ESCAPE: // escape key pressed
                 glfwSetWindowShouldClose(window, GL_TRUE);
                 break;
             case '1':
-                Camera = ObjCam;
+                Camera = PlayerCam;
                 break;
             case '2':
+                Camera = ObjCam;
+                break;
+            case '3':
                 Camera = WorldCam;
                 break;
             default:
                 break;
-            }
+        }
     }
 }	
 
@@ -106,6 +112,9 @@ void mouse_pos_callback(GLFWwindow* window, double x, double y)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
+    if(Camera == PlayerCam)
+        return;
+
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
         Input.rMousePressed = true;
     }
@@ -150,53 +159,8 @@ static void error_callback(int error, const char* description)
     fputs(description, stderr);
 }
 
-int main (int argc, char **argv)
+int ParseAndReadMazeFile(int argc, char **argv)
 {
-    GLFWwindow* window;
-    glfwSetErrorCallback(error_callback);
-    
-    if (!glfwInit()) {
-        exit(1);
-    }
-
-    // Specify that we want OpenGL 3.3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Create the window and OpenGL context
-    window = glfwCreateWindow(winX, winY, "Modelling and viewing", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        exit(1);
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
-	
-	// Initialize GLEW
-	glewExperimental = true; // Needed for core profile
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		exit(1);
-	}
-
-	// Set up the shaders we are to use. 0 indicates error.
-	programID = LoadShaders("mview.vert", "mview.frag");
-	if (programID == 0) {
-		exit(1);
-    }
-
-    // Set OpenGL state we need for this application.
-    glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
-	glEnable(GL_DEPTH_TEST);
-	glUseProgram(programID);
-    
-    // Set up the scene and the cameras
-    setProjection();
-    
     std::ifstream infile;
     int mazeSize;
     int* mazeLayout;
@@ -253,10 +217,66 @@ int main (int argc, char **argv)
 
     TheMaze = new Maze(mazeSize, mazeSize, mazeLayout, programID);
     TheMaze->SetPosition(0,0,90);
+    return 1;
+}
 
+int main (int argc, char **argv)
+{
+    GLFWwindow* window;
+    glfwSetErrorCallback(error_callback);
+    
+    if (!glfwInit()) {
+        exit(1);
+    }
+
+    // Specify that we want OpenGL 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Create the window and OpenGL context
+    window = glfwCreateWindow(winX, winY, "Modelling and viewing", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(1);
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+	
+	// Initialize GLEW
+	glewExperimental = true; // Needed for core profile
+	if (glewInit() != GLEW_OK) {
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		exit(1);
+	}
+
+	// Set up the shaders we are to use. 0 indicates error.
+	programID = LoadShaders("mview.vert", "mview.frag");
+	if (programID == 0) {
+		exit(1);
+    }
+
+    // Set OpenGL state we need for this application.
+    glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
+	glEnable(GL_DEPTH_TEST);
+	glUseProgram(programID);
+    
+    // Set up the scene and the cameras
+    setProjection();
+
+    // Parse program arguments and read maze
+    if (!ParseAndReadMazeFile(argc, argv)) {
+        exit(1);
+    }
+    
+    // Set cameras, with locations
     WorldCam = new WorldObjectViewer( cameraPos );
     ObjCam = new ObjectViewer( cameraPos );
-    Camera = ObjCam;
+    PlayerCam = new ObjectViewer( playerPos );
+    Camera = PlayerCam;
 
     // Define callback functions and start main loop
     glfwSetKeyCallback(window, key_callback);
