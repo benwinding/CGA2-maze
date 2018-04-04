@@ -31,7 +31,7 @@ const glm::mat4 Viewer::getViewMtx() const
 */
 void Viewer::reset()
 {
-    glm::vec3 at(0.0f, 0.0f, 0.0f);
+    glm::vec3 at(0.0f, 1.0f, 0.0f);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
     viewMtx = glm::lookAt(initEye, at, up);
 }
@@ -87,6 +87,59 @@ void ObjectViewer::update( InputState &input )
         viewMtx[1][2] = eyeZ[1];
         viewMtx[2][2] = eyeZ[2];
     }
+}
+
+// Player Viewer
+PlayerViewer::PlayerViewer(glm::vec3 eye)
+    : Viewer(eye)
+{}
+
+void PlayerViewer::update( InputState &input ) 
+{
+    glm::vec3 eyeX( viewMtx[0][0], viewMtx[1][0], viewMtx[2][0] );
+    glm::vec3 eyeY( viewMtx[0][1], viewMtx[1][1], viewMtx[2][1] );
+    glm::vec3 eyeZ( viewMtx[0][2], viewMtx[1][2], viewMtx[2][2] );
+
+    float yRot = 0;
+    float tx, tz;
+
+    if ( input.ReadKEY_UP() ) {
+        viewMtx = glm::translate(viewMtx, eyeZ);
+    }
+    else if ( input.ReadKEY_DOWN() ) {
+        glm::vec3 reverseEyeZ(-eyeZ[0], -eyeZ[1], -eyeZ[2]);
+        viewMtx = glm::translate(viewMtx, reverseEyeZ);
+    }
+    else if ( input.ReadKEY_LEFT() ) {
+        yRot = -90;
+    }
+    else if ( input.ReadKEY_RIGHT() ) {
+        yRot = 90;
+    }
+
+    // Rotate about the eye's y axis.
+    if ( yRot != 0 )
+    {
+        float sinY = sin(DEG2RAD(yRot));
+        float cosY = cos(DEG2RAD(yRot));
+
+        glm::vec3 tmpX = eyeX;
+        eyeX = cosY*tmpX + sinY*eyeZ;
+        eyeZ = -sinY*tmpX + cosY*eyeZ;
+    }
+
+    // Update the view matrix with new eye axes.
+    viewMtx[0][0] = eyeX[0];
+    viewMtx[1][0] = eyeX[1];
+    viewMtx[2][0] = eyeX[2];
+    
+    viewMtx[0][1] = eyeY[0];
+    viewMtx[1][1] = eyeY[1];
+    viewMtx[2][1] = eyeY[2];
+    
+    viewMtx[0][2] = eyeZ[0];
+    viewMtx[1][2] = eyeZ[1];
+    viewMtx[2][2] = eyeZ[2];
 }
 
 /**

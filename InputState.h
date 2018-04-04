@@ -25,6 +25,42 @@ struct InputState
 	float deltaX;
 	float deltaY;
 
+    bool KEY_UP;
+    bool KEY_DOWN;
+    bool KEY_LEFT;
+    bool KEY_RIGHT;
+
+    bool ReadKEY_UP()
+    {
+        bool res = KEY_UP;
+        KEY_UP = false;
+        return res;
+    }
+
+    bool ReadKEY_DOWN()
+    {
+        bool res = KEY_DOWN;
+        KEY_DOWN = false;
+        return res;
+    }
+
+    bool ReadKEY_LEFT()
+    {
+        bool res = KEY_LEFT;
+        KEY_LEFT = false;
+        return res;
+    }
+
+    bool ReadKEY_RIGHT()
+    {
+        bool res = KEY_RIGHT;
+        KEY_RIGHT = false;
+        return res;
+    }
+
+
+
+
     // Update cursor variables based on new position x,y
     void update(float x, float y)
     {

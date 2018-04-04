@@ -53,6 +53,18 @@ public:
 };
 
 /**
+ PlayerViewer rotates from the keyboard. To do this it 
+ reads the current camera axes from the viewing matrix.
+*/
+class PlayerViewer : public Viewer
+{
+public:
+    PlayerViewer( glm::vec3 eye );
+
+    virtual void update( InputState &input );
+};
+
+/**
  This is an example of what NOT to do!
  WorldObjectViewer rotates about the world x and y axes
  in response to mouse motion. Vertical motion -> x axis

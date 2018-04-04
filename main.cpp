@@ -40,7 +40,7 @@ int winY = 500;
 Viewer *Camera;
 WorldObjectViewer *WorldCam;
 ObjectViewer *ObjCam;
-ObjectViewer *PlayerCam;
+PlayerViewer *PlayerCam;
 
 glm::vec3 cameraPos(0.0f, 5.0f, -12.0f);
 glm::vec3 playerPos(3.0f, 1.0f, 0.0f);
@@ -73,10 +73,22 @@ void key_callback(GLFWwindow* window,
                 Camera = WorldCam;
                 break;
             case GLFW_KEY_UP:
-                Camera = WorldCam;
+                Input.KEY_UP = true;
                 break;
-           
+            case GLFW_KEY_DOWN:
+                Input.KEY_DOWN = true;
+                break;
+            case GLFW_KEY_LEFT:
+                Input.KEY_LEFT = true;
+                break;
+            case GLFW_KEY_RIGHT:
+                Input.KEY_RIGHT = true;
+                break;
             default:
+                Input.KEY_UP = false;
+                Input.KEY_DOWN = false;
+                Input.KEY_LEFT = false;
+                Input.KEY_RIGHT = false;
                 break;
         }
     }
@@ -282,7 +294,7 @@ int main (int argc, char **argv)
     // Set cameras, with locations
     WorldCam = new WorldObjectViewer( cameraPos );
     ObjCam = new ObjectViewer( cameraPos );
-    PlayerCam = new ObjectViewer( playerPos );
+    PlayerCam = new PlayerViewer( playerPos );
     Camera = PlayerCam;
 
     // Define callback functions and start main loop
