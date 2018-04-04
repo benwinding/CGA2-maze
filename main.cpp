@@ -242,6 +242,30 @@ int ParseAndReadMazeFile(int argc, char **argv)
     return 1;
 }
 
+void PrintHelp() 
+{
+    const char * vogon_poem = R"V0G0N(
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ~~~ Welcome 2 Assignment 2! ~~~
+        ~~~~~~~ By Ben Winding ~~~~~~~~
+
+    Usage: 
+        ./assign2 FILENAME
+
+    Keyboard:
+        UP    = Move Forward
+        DOWN  = Move Backward
+        LEFT  = Turn Left
+        RIGHT = Turn Right
+        ESC   = Exit Program
+
+        1 = First Person View (Mouse disabled)
+        2 = World View (Mouse enabled)
+
+    )V0G0N";
+    std::cout << vogon_poem << std::endl;
+}
+
 int main (int argc, char **argv)
 {
     GLFWwindow* window;
@@ -288,6 +312,9 @@ int main (int argc, char **argv)
     
     // Set up the scene and the cameras
     setProjection();
+
+    // Print program help
+    PrintHelp();
 
     // Parse program arguments and read maze
     if (!ParseAndReadMazeFile(argc, argv)) {

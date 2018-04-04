@@ -122,9 +122,12 @@ void Maze::render(int programID)
     	for (int j=0; j<sizeJ; ++j)
     	{
     		int gridValue = mazeLayout[i*sizeJ+j];
-    		if(gridValue == 1) {
+            if(gridValue == 1) {
                 drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
-    		}
+            }
+            if(gridValue == 2) {
+                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.5, 0.5, 0.5);
+            }
     	}
     }
 	glBindVertexArray(0);
