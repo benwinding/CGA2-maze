@@ -72,6 +72,10 @@ void key_callback(GLFWwindow* window,
             case '3':
                 Camera = WorldCam;
                 break;
+            case GLFW_KEY_UP:
+                Camera = WorldCam;
+                break;
+           
             default:
                 break;
         }
@@ -159,6 +163,9 @@ static void error_callback(int error, const char* description)
     fputs(description, stderr);
 }
 
+/**
+ * Parse program arguments, read maze file, create maze object
+ */
 int ParseAndReadMazeFile(int argc, char **argv)
 {
     std::ifstream infile;
