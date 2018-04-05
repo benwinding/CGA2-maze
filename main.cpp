@@ -302,12 +302,12 @@ int main (int argc, char **argv)
 	}
 
     // Set up the shaders we are to use. 0 indicates error.
-    programID1 = LoadShaders("mview.vert", "mview.frag");
+    programID1 = LoadShaders("mazewalls.vert", "mazewalls.frag");
     if (programID1 == 0) {
         exit(1);
     }
 	// Set up the shaders we are to use. 0 indicates error.
-	programID2 = LoadShaders("mview2.vert", "mview2.frag");
+	programID2 = LoadShaders("mazegoal.vert", "mazegoal.frag");
 	if (programID2 == 0) {
 		exit(1);
     }
