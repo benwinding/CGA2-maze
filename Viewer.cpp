@@ -120,11 +120,24 @@ void PlayerViewer::RotateTilt(float deltaTurn)
 
 void PlayerViewer::TranslateStraight(float deltaMove)
 {
+    float tilt = currentTilt;
+    RotateTilt(-tilt);
     glm::vec3 eyeZ(viewMtx[0][2], viewMtx[1][2], viewMtx[2][2]);
     glm::vec3 normZ = glm::normalize(eyeZ);
     glm::vec3 zScaled = normZ * deltaMove;
     viewMtx = glm::translate(viewMtx, zScaled);
     initEye = initEye - zScaled;
+    RotateTilt(tilt);
+}
+
+bool PlayerViewer::MazeInteferes( InputState &input ) 
+{
+    float y = initEye[0];
+    float z = initEye[2];
+    int yr = round(y);
+    int zr = round(z);
+
+    return input.maze->IsCollision(yr,zr);
 }
 
 void PlayerViewer::update( InputState &input ) 
@@ -133,16 +146,15 @@ void PlayerViewer::update( InputState &input )
     float deltaTurn = 10.f;
 
     if ( input.ReadKEY_UP() ) {
-        float tilt = currentTilt;
-        RotateTilt(-tilt);
-        TranslateStraight(deltaMove);
-        RotateTilt(tilt);
+        if (!MazeInteferes(input) )
+            TranslateStraight(deltaMove);
+        else
+            std::cout << "Interference" << std::endl;
+
     }
     else if ( input.ReadKEY_DOWN() ) {
-        float tilt = currentTilt;
-        RotateTilt(-tilt);
-        TranslateStraight(-deltaMove);
-        RotateTilt(tilt);
+        // if ( maze.Interfes() )
+            TranslateStraight(-deltaMove);
     }
     else if ( input.ReadKEY_LEFT() ) {
         RotatePan(-deltaTurn);

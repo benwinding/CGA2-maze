@@ -1,3 +1,9 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <math.h>
+
 #include "Maze.h"
 
 #include <GL/glew.h>
@@ -176,6 +182,15 @@ bool Maze::IsCollision(int i, int j)
 {
     // Render Current Maze Layout
     int sizeJ = this->gridCols;
+    if(i > sizeJ || i < 0) {
+        std::cout << "i not valid, i=" << i << std::endl;
+        return true;
+    }
+    if(j > sizeJ || j < 0) {
+        std::cout << "j not valid, j=" << j << std::endl;
+        return true;
+    }
+
     int gridValue = mazeLayout[i*sizeJ+j];
     if(gridValue == 1)
         return true;

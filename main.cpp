@@ -42,7 +42,7 @@ glm::vec3 cameraPos(0.0f, 3.0f, -15.0f);
 glm::vec3 playerPos(3.0f, 1.0f, 0.0f);
 
 // Data structure storing mouse input info
-InputState Input;
+InputState Input(TheMaze);
 
 unsigned int programID1, programID2;
 
@@ -169,7 +169,7 @@ void render()
     // Update the camera, and draw the scene.
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    Camera->update( Input );    
+    Camera->update(Input);
     
     setupView(programID1);
     TheMaze->renderWalls(programID1);

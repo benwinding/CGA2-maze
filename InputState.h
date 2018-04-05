@@ -6,12 +6,18 @@
 #ifndef _INPUTSTATE_H_
 #define _INPUTSTATE_H_
 
+#include "Maze.h"
+
 struct InputState
 {    
-	InputState(): lMousePressed(false),
+	InputState(Maze *mazeRef): lMousePressed(false),
                   rMousePressed(false),
     	    	  prevX(0), prevY(0),
-	    	      deltaX(0), deltaY(0) {}
+	    	      deltaX(0), deltaY(0) {
+        maze = mazeRef;
+    }
+
+    Maze *maze;
 
     // Is the mouse button currently being held down?
 	bool lMousePressed;

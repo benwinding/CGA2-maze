@@ -1,3 +1,5 @@
+#ifndef MAZE__H
+#define MAZE__H
 
 class Maze
 {
@@ -23,3 +25,5 @@ public:
     int GetCurrentY();
     float GetCurrentAngle();
 };
+
+#endif
