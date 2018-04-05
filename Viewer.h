@@ -61,8 +61,9 @@ class PlayerViewer : public Viewer
 private: 
     glm::vec3 currentEyeX;
     float currentTilt;
-    void RotateInPositionY(float rotY);
-    void RotateInPositionEyeX(float rotY);
+    float currentPan;
+    void RotatePan(float rotY);
+    void RotateTilt(float rotX);
     void TranslateStraight(float deltaMove);
 
 public:

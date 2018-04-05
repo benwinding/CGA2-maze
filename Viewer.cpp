@@ -1,5 +1,7 @@
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 #include <math.h>
 
 #include "Viewer.h"
@@ -97,22 +99,23 @@ PlayerViewer::PlayerViewer(glm::vec3 eye)
     reset();
 }
 
-void PlayerViewer::RotateInPositionY(float deltaTurn)
+void PlayerViewer::RotatePan(float deltaTurn)
 {
-    float yRot = DEG2RAD(deltaTurn);
+    float deltaRotY = DEG2RAD(deltaTurn);
     viewMtx = glm::translate(viewMtx, initEye);
-    viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
+    viewMtx = glm::rotate(viewMtx, deltaRotY, glm::vec3(0, 1.0f, 0));
     viewMtx = glm::translate(viewMtx, -initEye);
+    currentPan = currentPan + deltaRotY;
 }
 
-void PlayerViewer::RotateInPositionEyeX(float deltaTurn)
+void PlayerViewer::RotateTilt(float deltaTurn)
 {
-    glm::vec3 eyeX(viewMtx[0][0], viewMtx[1][0], viewMtx[2][0]);
     float deltaRotX = DEG2RAD(deltaTurn);
+    glm::vec3 eyeX(viewMtx[0][0], viewMtx[1][0], viewMtx[2][0]);
     viewMtx = glm::translate(viewMtx, initEye);
     viewMtx = glm::rotate(viewMtx, deltaRotX, eyeX);
     viewMtx = glm::translate(viewMtx, -initEye);
-    currentTilt = currentTilt + deltaRotX;
+    currentTilt = currentTilt + deltaTurn;
 }
 
 void PlayerViewer::TranslateStraight(float deltaMove)
@@ -120,14 +123,8 @@ void PlayerViewer::TranslateStraight(float deltaMove)
     glm::vec3 eyeZ(viewMtx[0][2], viewMtx[1][2], viewMtx[2][2]);
     glm::vec3 normZ = glm::normalize(eyeZ);
     glm::vec3 zScaled = normZ * deltaMove;
-
-    // RotateInPositionEyeX(-currentTilt);
     viewMtx = glm::translate(viewMtx, zScaled);
-    // RotateInPositionEyeX(currentTilt);
-    if(deltaMove > 0)
-        initEye = initEye - zScaled;       
-    else
-        initEye = initEye + zScaled;
+    initEye = initEye - zScaled;
 }
 
 void PlayerViewer::update( InputState &input ) 
@@ -135,22 +132,28 @@ void PlayerViewer::update( InputState &input )
     float deltaMove = 0.2f;
     float deltaTurn = 10.f;
 
-    if ( input.ReadKEY_DOWN() ) {
-        TranslateStraight(-deltaMove);
-    }
-    else if ( input.ReadKEY_UP() ) {
+    if ( input.ReadKEY_UP() ) {
+        float tilt = currentTilt;
+        RotateTilt(-tilt);
         TranslateStraight(deltaMove);
+        RotateTilt(tilt);
+    }
+    else if ( input.ReadKEY_DOWN() ) {
+        float tilt = currentTilt;
+        RotateTilt(-tilt);
+        TranslateStraight(-deltaMove);
+        RotateTilt(tilt);
     }
     else if ( input.ReadKEY_LEFT() ) {
-        RotateInPositionY(-deltaTurn);
+        RotatePan(-deltaTurn);
     }
     else if ( input.ReadKEY_RIGHT() ) {
-        RotateInPositionY(deltaTurn);
+        RotatePan(deltaTurn);
     }
     else if ( input.ReadKEY_A() ) {
-        RotateInPositionEyeX(-deltaTurn);
+        RotateTilt(-deltaTurn);
     }
     else if ( input.ReadKEY_Z() ) {
-        RotateInPositionEyeX(deltaTurn);
+        RotateTilt(deltaTurn);
     }
 }
