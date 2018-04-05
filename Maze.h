@@ -15,7 +15,8 @@ class Maze
 	void createVAO();
 public:
     Maze(int gridRows, int gridCols, int* mazeLayout);
-    void render(int shaderID1, int shaderID2);
+    void renderWalls(int shaderID);
+    void renderGoal(int shaderID);
     void SetPosition(int currentX, int currentY, float currentAngle);
     bool IsCollision(int i, int j);
     int GetCurrentX();

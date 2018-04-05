@@ -26,9 +26,6 @@
  Variables controlling how the scene is drawn
 */
 
-float tableWidth = 4.0f;
-float tableLength = 3.0f;
-
 Maze *TheMaze;
 
 int winX = 500;
@@ -148,26 +145,30 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     }                
 }
 
+void setupView(int progId) 
+{
+    // First load the viewing matrix from the current camera
+    glm::mat4 viewMatrix;
+    viewMatrix = Camera->getViewMtx();
+    // Load it to the shader program
+    int viewHandle = glGetUniformLocation(progId, "view");
+    if (viewHandle == -1) {
+        std::cout << "Uniform: view is not an active uniform label\n";
+    }
+    glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
+}
+
 void render() 
 {
     // Update the camera, and draw the scene.
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     Camera->update( Input );    
-
-    // First load the viewing matrix from the current camera
-    glm::mat4 viewMatrix;
-    viewMatrix = Camera->getViewMtx();
     
-	// Load it to the shader program
-	int viewHandle = glGetUniformLocation(programID1, "view");
-	if (viewHandle == -1) {
-		std::cout << "Uniform: view is not an active uniform label\n";
-	}
-	glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
-
-    // Now draw the table
-    TheMaze->render(programID1, programID2);
+    setupView(programID1);
+    TheMaze->renderWalls(programID1);
+    setupView(programID2);
+    TheMaze->renderGoal(programID2);
 }
 
 /**
@@ -311,11 +312,10 @@ int main (int argc, char **argv)
 		exit(1);
     }
 
-    glUseProgram(programID1);
-
     // Set OpenGL state we need for this application.
+    glUseProgram(programID1);
     glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
-	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     
     // Set up the scene and the cameras
     setProjection();
@@ -332,6 +332,7 @@ int main (int argc, char **argv)
     ObjCam = new ObjectViewer( cameraPos );
     PlayerCam = new PlayerViewer( playerPos );
     Camera = PlayerCam;
+
 
     // Define callback functions and start main loop
     glfwSetKeyCallback(window, key_callback);
