@@ -107,41 +107,39 @@ void PlayerViewer::update( InputState &input )
 
     glm::vec3 normZ = glm::normalize(eyeZ);
     glm::vec3 zScaled = normZ * deltaMove;
-    glm::vec3 rzScaled = -zScaled;
 
-    glm::vec3 rEyePos = initEye;
-    glm::vec3 eyePos = -initEye;
+    glm::vec3 eyePos = initEye;
 
     if ( input.ReadKEY_UP() ) {
         viewMtx = glm::translate(viewMtx, zScaled);
         initEye = initEye - zScaled;
     }
     else if ( input.ReadKEY_DOWN() ) {
-        viewMtx = glm::translate(viewMtx, rzScaled);
+        viewMtx = glm::translate(viewMtx, -zScaled);
         initEye = initEye - rzScaled;
     }
     else if ( input.ReadKEY_LEFT() ) {
         float yRot = DEG2RAD(-deltaTurn);
-        viewMtx = glm::translate(viewMtx, rEyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
         viewMtx = glm::translate(viewMtx, eyePos);
+        viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
+        viewMtx = glm::translate(viewMtx, -eyePos);
     }
     else if ( input.ReadKEY_RIGHT() ) {
         float yRot = DEG2RAD(deltaTurn);
-        viewMtx = glm::translate(viewMtx, rEyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
         viewMtx = glm::translate(viewMtx, eyePos);
+        viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
+        viewMtx = glm::translate(viewMtx, -eyePos);
     }
     else if ( input.ReadKEY_A() ) {
         float yRot = DEG2RAD(-deltaTurn);
-        viewMtx = glm::translate(viewMtx, rEyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, eyeX);
         viewMtx = glm::translate(viewMtx, eyePos);
+        viewMtx = glm::rotate(viewMtx, yRot, eyeX);
+        viewMtx = glm::translate(viewMtx, -eyePos);
     }
     else if ( input.ReadKEY_Z() ) {
         float yRot = DEG2RAD(deltaTurn);
-        viewMtx = glm::translate(viewMtx, rEyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, eyeX);
         viewMtx = glm::translate(viewMtx, eyePos);
+        viewMtx = glm::rotate(viewMtx, yRot, eyeX);
+        viewMtx = glm::translate(viewMtx, -eyePos);
     }
 }
