@@ -100,6 +100,12 @@ void key_callback(GLFWwindow* window,
             case GLFW_KEY_RIGHT:
                 Input.KEY_RIGHT = true;
                 break;
+            case GLFW_KEY_A:
+                Input.KEY_A = true;
+                break;
+            case GLFW_KEY_Z:
+                Input.KEY_Z = true;
+                break;
             default:
                 Input.KEY_UP = false;
                 Input.KEY_DOWN = false;

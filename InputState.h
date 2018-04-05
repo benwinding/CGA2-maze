@@ -29,6 +29,8 @@ struct InputState
     bool KEY_DOWN;
     bool KEY_LEFT;
     bool KEY_RIGHT;
+    bool KEY_A;
+    bool KEY_Z;
 
     bool ReadKEY_UP()
     {
@@ -40,7 +42,7 @@ struct InputState
     bool ReadKEY_DOWN()
     {
         bool res = KEY_DOWN;
-        // KEY_DOWN = false;
+        KEY_DOWN = false;
         return res;
     }
 
@@ -55,6 +57,20 @@ struct InputState
     {
         bool res = KEY_RIGHT;
         KEY_RIGHT = false;
+        return res;
+    }
+
+    bool ReadKEY_A()
+    {
+        bool res = KEY_A;
+        KEY_A = false;
+        return res;
+    }
+
+    bool ReadKEY_Z()
+    {
+        bool res = KEY_Z;
+        KEY_Z = false;
         return res;
     }
 
