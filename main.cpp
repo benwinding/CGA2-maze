@@ -323,9 +323,6 @@ int main (int argc, char **argv)
     glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
     glEnable(GL_DEPTH_TEST);
     
-    // Set up the scene and the cameras
-    setProjection();
-
     // Print program help
     PrintHelp();
 
@@ -345,6 +342,9 @@ int main (int argc, char **argv)
     glfwSetCursorPosCallback(window, mouse_pos_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetFramebufferSizeCallback(window, reshape_callback);
+
+    // Set up the scene and the cameras
+    setProjection();
 
     while (!glfwWindowShouldClose(window))
     {

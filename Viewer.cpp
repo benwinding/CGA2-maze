@@ -124,7 +124,10 @@ void PlayerViewer::TranslateStraight(float deltaMove)
     // RotateInPositionEyeX(-currentTilt);
     viewMtx = glm::translate(viewMtx, zScaled);
     // RotateInPositionEyeX(currentTilt);
-    initEye = initEye + zScaled;
+    if(deltaMove > 0)
+        initEye = initEye - zScaled;       
+    else
+        initEye = initEye + zScaled;
 }
 
 void PlayerViewer::update( InputState &input ) 
