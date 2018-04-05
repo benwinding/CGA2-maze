@@ -343,15 +343,18 @@ int main (int argc, char **argv)
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetFramebufferSizeCallback(window, reshape_callback);
 
-    // Set up the scene and the cameras
     setProjection();
 
+    bool firstRender;
     while (!glfwWindowShouldClose(window))
     {
         render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        if(!firstRender)
+            setProjection();
     }
 
     // Clean up
