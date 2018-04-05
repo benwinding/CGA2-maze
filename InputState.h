@@ -40,7 +40,7 @@ struct InputState
     bool ReadKEY_DOWN()
     {
         bool res = KEY_DOWN;
-        KEY_DOWN = false;
+        // KEY_DOWN = false;
         return res;
     }
 
