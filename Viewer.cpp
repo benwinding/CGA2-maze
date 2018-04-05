@@ -97,49 +97,57 @@ PlayerViewer::PlayerViewer(glm::vec3 eye)
     reset();
 }
 
+void PlayerViewer::RotateInPositionY(float deltaTurn)
+{
+    float yRot = DEG2RAD(deltaTurn);
+    viewMtx = glm::translate(viewMtx, initEye);
+    viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
+    viewMtx = glm::translate(viewMtx, -initEye);
+}
+
+void PlayerViewer::RotateInPositionEyeX(float deltaTurn)
+{
+    glm::vec3 eyeX(viewMtx[0][0], viewMtx[1][0], viewMtx[2][0]);
+    float deltaRotX = DEG2RAD(deltaTurn);
+    viewMtx = glm::translate(viewMtx, initEye);
+    viewMtx = glm::rotate(viewMtx, deltaRotX, eyeX);
+    viewMtx = glm::translate(viewMtx, -initEye);
+    currentTilt = currentTilt + deltaRotX;
+}
+
+void PlayerViewer::TranslateStraight(float deltaMove)
+{
+    glm::vec3 eyeZ(viewMtx[0][2], viewMtx[1][2], viewMtx[2][2]);
+    glm::vec3 normZ = glm::normalize(eyeZ);
+    glm::vec3 zScaled = normZ * deltaMove;
+
+    // RotateInPositionEyeX(-currentTilt);
+    viewMtx = glm::translate(viewMtx, zScaled);
+    // RotateInPositionEyeX(currentTilt);
+    initEye = initEye + zScaled;
+}
+
 void PlayerViewer::update( InputState &input ) 
 {
     float deltaMove = 0.2f;
     float deltaTurn = 10.f;
 
-    glm::vec3 eyeZ(viewMtx[0][2], viewMtx[1][2], viewMtx[2][2]);
-    glm::vec3 eyeX(viewMtx[0][0], viewMtx[1][0], viewMtx[2][0]);
-
-    glm::vec3 normZ = glm::normalize(eyeZ);
-    glm::vec3 zScaled = normZ * deltaMove;
-
-    glm::vec3 eyePos = initEye;
-
-    if ( input.ReadKEY_UP() ) {
-        viewMtx = glm::translate(viewMtx, zScaled);
-        initEye = initEye - zScaled;
+    if ( input.ReadKEY_DOWN() ) {
+        TranslateStraight(-deltaMove);
     }
-    else if ( input.ReadKEY_DOWN() ) {
-        viewMtx = glm::translate(viewMtx, -zScaled);
-        initEye = initEye - rzScaled;
+    else if ( input.ReadKEY_UP() ) {
+        TranslateStraight(deltaMove);
     }
     else if ( input.ReadKEY_LEFT() ) {
-        float yRot = DEG2RAD(-deltaTurn);
-        viewMtx = glm::translate(viewMtx, eyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
-        viewMtx = glm::translate(viewMtx, -eyePos);
+        RotateInPositionY(-deltaTurn);
     }
     else if ( input.ReadKEY_RIGHT() ) {
-        float yRot = DEG2RAD(deltaTurn);
-        viewMtx = glm::translate(viewMtx, eyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, glm::vec3(0, 1.0f, 0));
-        viewMtx = glm::translate(viewMtx, -eyePos);
+        RotateInPositionY(deltaTurn);
     }
     else if ( input.ReadKEY_A() ) {
-        float yRot = DEG2RAD(-deltaTurn);
-        viewMtx = glm::translate(viewMtx, eyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, eyeX);
-        viewMtx = glm::translate(viewMtx, -eyePos);
+        RotateInPositionEyeX(-deltaTurn);
     }
     else if ( input.ReadKEY_Z() ) {
-        float yRot = DEG2RAD(deltaTurn);
-        viewMtx = glm::translate(viewMtx, eyePos);
-        viewMtx = glm::rotate(viewMtx, yRot, eyeX);
-        viewMtx = glm::translate(viewMtx, -eyePos);
+        RotateInPositionEyeX(deltaTurn);
     }
 }

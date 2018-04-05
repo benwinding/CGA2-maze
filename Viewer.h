@@ -58,6 +58,13 @@ public:
 */
 class PlayerViewer : public Viewer
 {
+private: 
+    glm::vec3 currentEyeX;
+    float currentTilt;
+    void RotateInPositionY(float rotY);
+    void RotateInPositionEyeX(float rotY);
+    void TranslateStraight(float deltaMove);
+
 public:
     PlayerViewer( glm::vec3 eye );
 
