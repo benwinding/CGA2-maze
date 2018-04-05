@@ -52,12 +52,12 @@ void setProjection()
 {
     float fov;
     if(Camera == PlayerCam)
-        fov = (float) M_PI / 2.f;
+        fov = (float) M_PI / 2.5f;
     else
         fov = (float) M_PI / 3.0f;
 
     glm::mat4 projection;
-    projection = glm::perspective(fov, (float) winX / winY, 1.0f, 30.0f );
+    projection = glm::perspective(fov, (float) winX / winY, 0.2f, 50.0f );
 
 	// Load it to the shader program
 	int projHandle = glGetUniformLocation(programID1, "projection");
