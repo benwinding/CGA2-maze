@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -156,44 +155,57 @@ void Maze::renderGoal(int shaderID)
 	glFlush();
 }
 
-void Maze::SetPosition(int currentX, int currentY, float currentAngle) 
+void Maze::renderPlayer(int shaderID)
 {
-    this->currentX = currentX;
-    this->currentY = currentY;
-    this->currentAngle = currentAngle;
-}
+    glUseProgram(shaderID);
+    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
+    if (modelUniformHandle == -1)
+        exit(1);
 
-int Maze::GetCurrentX() 
-{
-    return this->currentX;
-}
+    glBindVertexArray(this->vaoHandle);   
 
-int Maze::GetCurrentY() 
-{
-    return this->currentY;
-}
+    // Render Current Maze Layout
+    float i = this->currentX;
+    float j = this->currentZ;
+    drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.1, 10, 0.1);
+    glBindVertexArray(0);
 
-float Maze::GetCurrentAngle() 
-{
-    return this->currentAngle;
+    glFlush();
 }
 
 bool Maze::IsCollision(int i, int j)
 {
     // Render Current Maze Layout
-    int sizeJ = this->gridCols;
-    if(i > sizeJ || i < 0) {
-        std::cout << "i not valid, i=" << i << std::endl;
+    int size = this->gridCols;
+    std::cout << "Maze:: " << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
+    if(i > size || i < 0) {
+        std::cout << "Maze:: " << "i out of bounds" << std::endl;
         return true;
     }
-    if(j > sizeJ || j < 0) {
-        std::cout << "j not valid, j=" << j << std::endl;
+    if(j > size || j < 0) {
+        std::cout << "Maze:: " << "j out of bounds" << std::endl;
         return true;
     }
 
-    int gridValue = mazeLayout[i*sizeJ+j];
+    int gridValue = mazeLayout[i*size+j];
     if(gridValue == 1)
+    {
+        std::cout << "Maze:: " << "val Collision Detected" << std::endl;
         return true;
-    else
+    }
+    else 
+    {
         return false;
+    }
+}
+
+float Maze::GetWidth()
+{
+    return this->gridCols;
+}
+
+void Maze::SetPosition(glm::vec3 position)
+{
+    this->currentX = position[0];
+    this->currentZ = position[2];
 }

@@ -17,7 +17,7 @@ endif
 
 CC = g++
 EXE = assign2
-OBJS = main.o Maze.o Shader.o Viewer.o
+OBJS = main.o Maze.o Shader.o Viewer.o InputState.o
 
 .PHONY: all clean
 
@@ -32,7 +32,7 @@ all: $(EXE)
 $(EXE): $(OBJS)
 	$(CC) -o $(EXE) $(OBJS) $(GL_LIBS)
 
-main.o: main.cpp InputState.h 	
+main.o: main.cpp InputState.h
 	$(CC) $(CPPFLAGS) -c main.cpp
 
 Shader.o : Shader.cpp Shader.hpp
@@ -43,6 +43,9 @@ Viewer.o: Viewer.h Viewer.cpp InputState.h
 
 Maze.o: Maze.h Maze.cpp	
 	$(CC) $(CPPFLAGS) -c Maze.cpp
+
+InputState.o: InputState.h InputState.cpp	
+	$(CC) $(CPPFLAGS) -c InputState.cpp
 
 clean:
 	rm -f *.o $(EXE)$(EXT)

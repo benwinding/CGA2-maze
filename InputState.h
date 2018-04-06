@@ -8,23 +8,20 @@
 
 #include "Maze.h"
 
-struct InputState
+class InputState
 {    
-	InputState(Maze *mazeRef): lMousePressed(false),
-                  rMousePressed(false),
-    	    	  prevX(0), prevY(0),
-	    	      deltaX(0), deltaY(0) {
-        maze = mazeRef;
-    }
+protected:
+public:
+	InputState(Maze *mazeRef);
 
     Maze *maze;
 
     // Is the mouse button currently being held down?
 	bool lMousePressed;
-	bool rMousePressed;
+    bool rMousePressed;
 
     // Last known position of the cursor
-	float prevX;
+    float prevX;
 	float prevY;
 
     // Accumulated change in cursor position. 
@@ -37,68 +34,20 @@ struct InputState
     bool KEY_RIGHT;
     bool KEY_A;
     bool KEY_Z;
+    bool KEY_T;
+    bool KEY_C;
 
-    bool ReadKEY_UP()
-    {
-        bool res = KEY_UP;
-        KEY_UP = false;
-        return res;
-    }
+    bool ReadKEY_UP();
+    bool ReadKEY_DOWN();
+    bool ReadKEY_LEFT();
+    bool ReadKEY_RIGHT();
+    bool ReadKEY_A();
+    bool ReadKEY_Z();
+    bool ReadKEY_T();
+    bool ReadKEY_C();
 
-    bool ReadKEY_DOWN()
-    {
-        bool res = KEY_DOWN;
-        KEY_DOWN = false;
-        return res;
-    }
-
-    bool ReadKEY_LEFT()
-    {
-        bool res = KEY_LEFT;
-        KEY_LEFT = false;
-        return res;
-    }
-
-    bool ReadKEY_RIGHT()
-    {
-        bool res = KEY_RIGHT;
-        KEY_RIGHT = false;
-        return res;
-    }
-
-    bool ReadKEY_A()
-    {
-        bool res = KEY_A;
-        KEY_A = false;
-        return res;
-    }
-
-    bool ReadKEY_Z()
-    {
-        bool res = KEY_Z;
-        KEY_Z = false;
-        return res;
-    }
-
-    // Update cursor variables based on new position x,y
-    void update(float x, float y)
-    {
-        float xDiff = x - prevX;
-        float yDiff = y - prevY;
-        deltaX += xDiff;
-        deltaY += yDiff;
-        prevX = x;
-        prevY = y;
-    };
-
-    // Read off the accumulated motion and reset it
-    void readDeltaAndReset(float *x, float *y)
-    {
-        *x = deltaX;
-        *y = deltaY;
-        deltaX = 0;
-        deltaY = 0;
-    };
+    void update(float x, float y);
+    void readDeltaAndReset(float *x, float *y);
 };
 
-#endif // _INPUTSTATE_H_
+#endif

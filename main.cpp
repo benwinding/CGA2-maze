@@ -17,9 +17,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "InputState.h"
 #include "Viewer.h"
 #include "Maze.h"
+#include "InputState.h"
 #include "Shader.hpp"
 
 /**
@@ -39,10 +39,10 @@ ObjectViewer *ObjCam;
 PlayerViewer *PlayerCam;
 
 glm::vec3 cameraPos(0.0f, 3.0f, -15.0f);
-glm::vec3 playerPos(3.0f, 1.0f, 0.0f);
+glm::vec3 playerPos(2.5f, 1.0f, 1.5f);
 
 // Data structure storing mouse input info
-InputState Input(TheMaze);
+InputState *Input;
 
 unsigned int programID1, programID2;
 
@@ -89,28 +89,34 @@ void key_callback(GLFWwindow* window,
                 setProjection();
                 break;
             case GLFW_KEY_UP:
-                Input.KEY_UP = true;
+                Input->KEY_UP = true;
                 break;
             case GLFW_KEY_DOWN:
-                Input.KEY_DOWN = true;
+                Input->KEY_DOWN = true;
                 break;
             case GLFW_KEY_LEFT:
-                Input.KEY_LEFT = true;
+                Input->KEY_LEFT = true;
                 break;
             case GLFW_KEY_RIGHT:
-                Input.KEY_RIGHT = true;
+                Input->KEY_RIGHT = true;
                 break;
             case GLFW_KEY_A:
-                Input.KEY_A = true;
+                Input->KEY_A = true;
                 break;
             case GLFW_KEY_Z:
-                Input.KEY_Z = true;
+                Input->KEY_Z = true;
+                break;
+            case GLFW_KEY_C:
+                Input->KEY_C = true;
+                break;
+            case GLFW_KEY_T:
+                Input->KEY_T = true;
                 break;
             default:
-                Input.KEY_UP = false;
-                Input.KEY_DOWN = false;
-                Input.KEY_LEFT = false;
-                Input.KEY_RIGHT = false;
+                Input->KEY_UP = false;
+                Input->KEY_DOWN = false;
+                Input->KEY_LEFT = false;
+                Input->KEY_RIGHT = false;
                 break;
         }
     }
@@ -129,7 +135,7 @@ void mouse_pos_callback(GLFWwindow* window, double x, double y)
 {
     // Use a global data structure to store mouse info
     // We can then use it however we want
-    Input.update((float)x, (float)y);
+    Input->update((float) x, (float) y);
 }    
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -138,16 +144,16 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         return;
 
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-        Input.rMousePressed = true;
+        Input->rMousePressed = true;
     }
     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
-        Input.rMousePressed = false;
+        Input->rMousePressed = false;
     }
     else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        Input.lMousePressed = true;
+        Input->lMousePressed = true;
     }
     else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-        Input.lMousePressed = false;
+        Input->lMousePressed = false;
     }                
 }
 
@@ -169,12 +175,13 @@ void render()
     // Update the camera, and draw the scene.
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    Camera->update(Input);
+    Camera->update(*Input);
     
     setupView(programID1);
     TheMaze->renderWalls(programID1);
     setupView(programID2);
     TheMaze->renderGoal(programID2);
+    TheMaze->renderPlayer(programID2);
 }
 
 /**
@@ -246,7 +253,6 @@ int ParseAndReadMazeFile(int argc, char **argv)
     }
 
     TheMaze = new Maze(mazeSize, mazeSize, mazeLayout);
-    TheMaze->SetPosition(0,0,90);
     return 1;
 }
 
@@ -265,7 +271,14 @@ void PrintHelp()
         DOWN  = Move Backward
         LEFT  = Turn Left
         RIGHT = Turn Right
+
+        A     = Tilt Up
+        Z     = Tilt Down
+
         ESC   = Exit Program
+
+        T     = Textures on/off
+        C     = Collisions on/off
 
         1 = First Person View (Mouse disabled)
         2 = World View (Mouse enabled)
@@ -331,11 +344,11 @@ int main (int argc, char **argv)
         exit(1);
     }
     
+    Input = new InputState( TheMaze );
     // Set cameras, with locations
     ObjCam = new ObjectViewer( cameraPos );
     PlayerCam = new PlayerViewer( playerPos );
     Camera = PlayerCam;
-
 
     // Define callback functions and start main loop
     glfwSetKeyCallback(window, key_callback);

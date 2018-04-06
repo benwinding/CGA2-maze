@@ -66,6 +66,7 @@ private:
     void RotateTilt(float rotX);
     void TranslateStraight(float deltaMove);
     bool MazeInteferes(InputState &input);
+    void SetPlayerPosition(InputState &input);
 public:
     PlayerViewer( glm::vec3 eye );
 
