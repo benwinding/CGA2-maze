@@ -5,47 +5,31 @@ $(info Platform="$(PLATFORM)")
 # sudo apt-get install libglfw3-dev libglew-dev libglm-dev
 GL_LIBS = `pkg-config --static --libs glfw3 glew` 
 EXT = 
-CPPFLAGS = `pkg-config --cflags glfw3`
-
+CPPFLAGS = `pkg-config --cflags glfw3` -Iinclude
 
 # Any other platform specific libraries here...
 ifneq (, $(findstring MINGW, $(PLATFORM)))
     GL_LIBS = `pkg-config --static --libs glfw3 glew freeglut`
-	EXT = .exe
+    EXT = .exe
 endif
-
 
 CC = g++
 EXE = assign2
-OBJS = main.o Maze.o Shader.o Viewer.o InputState.o
 
-.PHONY: all clean
-
-# If you haven't seen this before, notice how the rules
-# of the Makefile build .o files from c++ source, and then
-# build the executable from the .o files. Files are only
-# re-made if they've been modified, or something they depend
-# on has been modified.
+CPP_FILES = $(wildcard src/*.cpp)
+O_FILES = $(addprefix out/, $(notdir $(CPP_FILES:%.cpp=%.o)))
+D_FILES = $(addprefix out/, $(notdir $(CPP_FILES:%.cpp=%.d)))
 
 all: $(EXE)
 
-$(EXE): $(OBJS)
-	$(CC) -o $(EXE) $(OBJS) $(GL_LIBS)
+out/%.o: src/%.cpp
+	@mkdir -p out
+	$(CC) $(CPPFLAGS) -c -MMD -o $@ $<
+	
+-include $(D_FILES)
 
-main.o: main.cpp InputState.h
-	$(CC) $(CPPFLAGS) -c main.cpp
-
-Shader.o : Shader.cpp Shader.hpp
-	$(CC) $(CPPFLAGS) -c Shader.cpp
-
-Viewer.o: Viewer.h Viewer.cpp InputState.h
-	$(CC) $(CPPFLAGS) -c Viewer.cpp
-
-Maze.o: Maze.h Maze.cpp	
-	$(CC) $(CPPFLAGS) -c Maze.cpp
-
-InputState.o: InputState.h InputState.cpp	
-	$(CC) $(CPPFLAGS) -c InputState.cpp
+$(EXE): $(O_FILES)
+	$(CC) -o $(EXE) $(O_FILES) $(GL_LIBS)
 
 clean:
 	rm -f *.o $(EXE)$(EXT)
