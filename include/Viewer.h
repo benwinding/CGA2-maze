@@ -9,8 +9,8 @@
 #ifndef _VIEWER_H_
 #define _VIEWER_H_
 
-#include "InputState.h"
 #include "glm/glm.hpp"
+#include "Player.h"
 
 /**
  The base Viewer class stores a current view transformation.
@@ -35,7 +35,7 @@ public:
     //    void orthogonaliseViewMtx();
     void reset();
 
-    virtual void update( InputState &input ) = 0;
+    virtual void update( Player &thePlayer ) = 0;
 };
 
 
@@ -49,7 +49,7 @@ class ObjectViewer : public Viewer
 public:
     ObjectViewer( glm::vec3 eye );
 
-    virtual void update( InputState &input );
+    virtual void update( Player &thePlayer );
 };
 
 /**
@@ -60,17 +60,11 @@ class PlayerViewer : public Viewer
 {
 private: 
     glm::vec3 currentEyeX;
-    float currentTilt;
-    float currentPan;
-    void RotatePan(float rotY);
-    void RotateTilt(float rotX);
-    void TranslateStraight(float deltaMove);
-    bool MazeInteferes(InputState &input);
-    void SetPlayerPosition(InputState &input);
+
 public:
     PlayerViewer( glm::vec3 eye );
 
-    virtual void update( InputState &input );
+    virtual void update( Player &thePlayer );
 };
 
 #endif // VIEWER_H

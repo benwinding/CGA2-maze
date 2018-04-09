@@ -32,4 +32,4 @@ $(EXE): $(O_FILES)
 	$(CC) -o $(EXE) $(O_FILES) $(GL_LIBS)
 
 clean:
-	rm -f *.o $(EXE)$(EXT)
+	rm -f out/* $(EXE)$(EXT)

@@ -3,70 +3,20 @@
 #include <iostream>
 #include <math.h>
 
-#include "Maze.h"
-
-#include <GL/glew.h>
-
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#define CUBE_NUM_VERTICES 8
-#define CUBE_NUM_TRIS 12
-#define VALS_PER_VERT 3
+#include "Maze.h"
+#include "App.h"
 
-/**
- * Creates a new vertex array object for a cube
- * and loads in data into a vertex attribute buffer
- */
-void Maze::createVAO()
+Maze::Maze(CubeMesh *cubeMesh)
 {
-    // Cube vertex data
-    float Vertices[ CUBE_NUM_VERTICES * VALS_PER_VERT ] = {
-        -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f };
-
-    // 12 triangles - 2 per face of the cube
-    unsigned int Indices[CUBE_NUM_TRIS*3] = {
-        0,1,2, 2,3,0,
-        1,5,6, 6,2,1,
-        5,4,7, 7,6,5,
-        4,0,3, 3,7,4,
-        3,2,6, 6,7,3,
-        4,5,1, 1,0,4
-    };
-
-	glGenVertexArrays(1, &this->vaoHandle);
-	glBindVertexArray(this->vaoHandle);
-
-	unsigned int buffer[2];
-	glGenBuffers(2, buffer);
-
-	// Set vertex attribute
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-	glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, VALS_PER_VERT, GL_FLOAT, GL_FALSE, 0, 0);
-
- 	// Set element attributes. Notice the change to using GL_ELEMENT_ARRAY_BUFFER
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 sizeof(Indices), Indices, GL_STATIC_DRAW);   
-
-    // Un-bind
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+    this->cubeMesh = cubeMesh;
 }
 
 
-Maze::Maze(int gridRows, int gridCols, int* mazeLayout) 
+void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
 {
     float cubeSize = 2;
 
@@ -79,17 +29,6 @@ Maze::Maze(int gridRows, int gridCols, int* mazeLayout)
     this->mazeY = cubeSize * wallThickness;
 
     this->mazeLayout = mazeLayout;
-    this->createVAO();
-}
-
-void drawCube(int modelUniformHandle, float tx, float ty, float tz, float sx, float sy, float sz)
-{
-    glm::mat4 model;
-    model = glm::mat4();
-    model = glm::translate( model, glm::vec3(tx,ty,tz));
-    model = glm::scale( model, glm::vec3(sx,sy,sz));
-    glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
-    glDrawElements(GL_TRIANGLES, CUBE_NUM_TRIS*3, GL_UNSIGNED_INT, 0);    
 }
 
 /**
@@ -102,14 +41,14 @@ void Maze::renderWalls(int shaderID)
     if (modelUniformHandle == -1)
         exit(1);
 
-    glBindVertexArray(this->vaoHandle);   
+    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     // First the floor
-    drawCube(modelUniformHandle, 0, -wallThickness, 0, mazeX, wallThickness, mazeZ);
-    drawCube(modelUniformHandle, 0, -(wallThickness-1), mazeZ+wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
-    drawCube(modelUniformHandle, 0, -(wallThickness-1), -mazeZ-wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
-    drawCube(modelUniformHandle, mazeX+wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
-    drawCube(modelUniformHandle, -mazeX-wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
+    this->cubeMesh->drawCube(modelUniformHandle, 0, -wallThickness, 0, mazeX, wallThickness, mazeZ);
+    this->cubeMesh->drawCube(modelUniformHandle, 0, -(wallThickness-1), mazeZ+wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
+    this->cubeMesh->drawCube(modelUniformHandle, 0, -(wallThickness-1), -mazeZ-wallThickness, mazeX+2*wallThickness, wallThickness+1, wallThickness);
+    this->cubeMesh->drawCube(modelUniformHandle, mazeX+wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
+    this->cubeMesh->drawCube(modelUniformHandle, -mazeX-wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeZ);
 
     // Render Current Maze Layout
     int sizeI = this->gridRows;
@@ -120,7 +59,7 @@ void Maze::renderWalls(int shaderID)
         {
             int gridValue = mazeLayout[i*sizeJ+j];
             if(gridValue == 1) {
-                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
+                this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
             }
         }
     }
@@ -135,7 +74,7 @@ void Maze::renderGoal(int shaderID)
     if (modelUniformHandle == -1)
         exit(1);
 
-    glBindVertexArray(this->vaoHandle);   
+    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     // Render Current Maze Layout
     int sizeI = this->gridRows;
@@ -146,7 +85,7 @@ void Maze::renderGoal(int shaderID)
     	{
     		int gridValue = mazeLayout[i*sizeJ+j];
             if(gridValue == 2) {
-                drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
+                this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
             }
     	}
     }
@@ -155,57 +94,31 @@ void Maze::renderGoal(int shaderID)
 	glFlush();
 }
 
-void Maze::renderPlayer(int shaderID)
+int Maze::getLocationValue(glm::ivec2 pos)
 {
-    glUseProgram(shaderID);
-    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
-    if (modelUniformHandle == -1)
-        exit(1);
-
-    glBindVertexArray(this->vaoHandle);   
-
-    // Render Current Maze Layout
-    float i = this->currentX;
-    float j = this->currentZ;
-    drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.1, 10, 0.1);
-    glBindVertexArray(0);
-
-    glFlush();
-}
-
-bool Maze::IsCollision(int i, int j)
-{
-    // Render Current Maze Layout
+    int i = pos[0];
+    int j = pos[1];
     int size = this->gridCols;
     std::cout << "Maze:: " << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
     if(i > size || i < 0) {
         std::cout << "Maze:: " << "i out of bounds" << std::endl;
-        return true;
+        return 1;
     }
     if(j > size || j < 0) {
         std::cout << "Maze:: " << "j out of bounds" << std::endl;
-        return true;
+        return 1;
     }
 
     int gridValue = mazeLayout[i*size+j];
-    if(gridValue == 1)
-    {
-        std::cout << "Maze:: " << "val Collision Detected" << std::endl;
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
+    return gridValue;
 }
 
-float Maze::GetWidth()
+bool Maze::IsLocationClear(glm::ivec2 pos)
 {
-    return this->gridCols;
+    return getLocationValue(pos) == 0;
 }
 
-void Maze::SetPosition(glm::vec3 position)
+bool Maze::IsLocationGoal(glm::ivec2 pos)
 {
-    this->currentX = position[0];
-    this->currentZ = position[2];
+    return getLocationValue(pos) == 2;
 }

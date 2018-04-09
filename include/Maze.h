@@ -5,27 +5,27 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+#include "CubeMesh.h"
+
 class Maze
 {
+private:
+    CubeMesh *cubeMesh;
     int gridRows, gridCols;
+    int* mazeLayout;
     float mazeX, mazeY, mazeZ;
     float wallThickness;
 
-    float currentX, currentZ, currentAngle;
+    int getLocationValue(glm::ivec2 pos);
 
-    int* mazeLayout;
-
-	unsigned int vaoHandle;
-	void createVAO();
 public:
-    float GetWidth();
-    Maze(int gridRows, int gridCols, int* mazeLayout);
-    void SetPosition(glm::vec3 currentPose);
-    bool IsCollision(int i, int j);
+    Maze(CubeMesh *cubeMesh);
+    void SetUpMaze(int gridRows, int gridCols, int* mazeLayout);
+    bool IsLocationClear(glm::ivec2 pos);
+    bool IsLocationGoal(glm::ivec2 pos);
 
     void renderWalls(int shaderID);
     void renderGoal(int shaderID);
-    void renderPlayer(int shaderID);
 };
 
 #endif

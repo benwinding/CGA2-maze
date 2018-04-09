@@ -43,12 +43,12 @@ ObjectViewer::ObjectViewer(glm::vec3 eye)
     reset();
 }
 
-void ObjectViewer::update( InputState &input ) 
+void ObjectViewer::update( Player &thePlayer ) 
 {
     float xRot, yRot;
-    input.readDeltaAndReset( &yRot, &xRot );
+    // input.readDeltaAndReset( &yRot, &xRot );
     
-    if ( input.lMousePressed )
+    // if ( input.lMousePressed )
     {
         // The first 3 rows of the view matrix are the camera x, y, z axes
         // in world coordinate space. (see lecture 6)
@@ -99,90 +99,37 @@ PlayerViewer::PlayerViewer(glm::vec3 eye)
     reset();
 }
 
-void PlayerViewer::RotatePan(float deltaTurn)
+void PlayerViewer::update( Player &thePlayer ) 
 {
-    float deltaRotY = DEG2RAD(deltaTurn);
-    viewMtx = glm::translate(viewMtx, initEye);
-    viewMtx = glm::rotate(viewMtx, deltaRotY, glm::vec3(0, 1.0f, 0));
-    viewMtx = glm::translate(viewMtx, -initEye);
-    currentPan = currentPan + deltaRotY;
-}
+    // float deltaMove = .2f;
+    // float deltaTurn = 10.f;
 
-void PlayerViewer::RotateTilt(float deltaTurn)
-{
-    float deltaRotX = DEG2RAD(deltaTurn);
-    glm::vec3 eyeX(viewMtx[0][0], viewMtx[1][0], viewMtx[2][0]);
-    viewMtx = glm::translate(viewMtx, initEye);
-    viewMtx = glm::rotate(viewMtx, deltaRotX, eyeX);
-    viewMtx = glm::translate(viewMtx, -initEye);
-    currentTilt = currentTilt + deltaTurn;
-}
-
-void PlayerViewer::TranslateStraight(float deltaMove)
-{
-    float tilt = currentTilt;
-    RotateTilt(-tilt);
-    glm::vec3 eyeZ(viewMtx[0][2], viewMtx[1][2], viewMtx[2][2]);
-    glm::vec3 normZ = glm::normalize(eyeZ);
-    glm::vec3 zScaled = normZ * deltaMove;
-    viewMtx = glm::translate(viewMtx, zScaled);
-    initEye = initEye - zScaled;
-    RotateTilt(tilt);
-}
-
-bool PlayerViewer::MazeInteferes( InputState &input ) 
-{
-    if (input.ReadKEY_C())
-        return false;
-
-    float x = initEye[0] - input.maze->GetWidth() / 2;
-    float z = initEye[2] - input.maze->GetWidth() / 2;
-    int xr = round(x);
-    int zr = round(z);
-
-    return input.maze->IsCollision(xr, zr);
-}
-
-void PlayerViewer::SetPlayerPosition(InputState &input)
-{
-    float x = (initEye[0] + 0.5f);
-    float z = (initEye[2] + 0.5f);
-    std::cout << "Viewer: Player coordinates: x=" << x << ",z=" << z << std::endl;
-    glm::vec3 temp(x, 0, z);
-    input.maze->SetPosition(temp);
-}
-
-void PlayerViewer::update( InputState &input ) 
-{
-    float deltaMove = .2f;
-    float deltaTurn = 10.f;
-
-    if ( input.ReadKEY_UP() ) {
-        // if (MazeInteferes(input)) {
-        //     std::cout << "Viewer: Cannot Move Interference" << std::endl;
-        //     return;
-        // }
-        TranslateStraight(deltaMove);
-        // SetPlayerPosition(input);
-    }
-    else if ( input.ReadKEY_DOWN() ) {
-        // if (MazeInteferes(input)) {
-        //     std::cout << "Viewer: Cannot Move Interference" << std::endl;
-        //     return;
-        // }
-        TranslateStraight(-deltaMove);
-        // SetPlayerPosition(input);
-    }
-    else if ( input.ReadKEY_LEFT() ) {
-        RotatePan(-deltaTurn);
-    }
-    else if ( input.ReadKEY_RIGHT() ) {
-        RotatePan(deltaTurn);
-    }
-    else if ( input.ReadKEY_A() ) {
-        RotateTilt(-deltaTurn);
-    }
-    else if ( input.ReadKEY_Z() ) {
-        RotateTilt(deltaTurn);
-    }
+    // if ( input.ReadKEY_UP() ) {
+    //     // if (MazeInteferes(input)) {
+    //     //     std::cout << "Viewer: Cannot Move Interference" << std::endl;
+    //     //     return;
+    //     // }
+    //     TranslateStraight(deltaMove);
+    //     // SetPlayerPosition(input);
+    // }
+    // else if ( input.ReadKEY_DOWN() ) {
+    //     // if (MazeInteferes(input)) {
+    //     //     std::cout << "Viewer: Cannot Move Interference" << std::endl;
+    //     //     return;
+    //     // }
+    //     TranslateStraight(-deltaMove);
+    //     // SetPlayerPosition(input);
+    // }
+    // else if ( input.ReadKEY_LEFT() ) {
+    //     RotatePan(-deltaTurn);
+    // }
+    // else if ( input.ReadKEY_RIGHT() ) {
+    //     RotatePan(deltaTurn);
+    // }
+    // else if ( input.ReadKEY_A() ) {
+    //     RotateTilt(-deltaTurn);
+    // }
+    // else if ( input.ReadKEY_Z() ) {
+    //     RotateTilt(deltaTurn);
+    // }
 }
