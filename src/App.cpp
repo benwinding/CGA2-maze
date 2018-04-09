@@ -129,7 +129,7 @@ void App::setupView(int progId)
 
 void App::setProjection()
 {
-    float fov = (float) M_PI / 2.5f;
+    float fov = (float) M_PI / 2.f;
     glm::mat4 projection;
     projection = glm::perspective(fov, (float) winX / winY, 0.2f, 50.0f );
 

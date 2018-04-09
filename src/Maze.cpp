@@ -104,7 +104,7 @@ void Maze::renderPlayer(int shaderID)
     glm::ivec2 location = this->thePlayer->GetLocation();
     float i = location[0];
     float j = location[1];
-    this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 4, 4, 4);
+    this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 2, 4, 2);
     glBindVertexArray(0);
     glFlush();
 }
