@@ -63,17 +63,20 @@ void App::MoveStraight(float moveAngle)
     };
     glm::ivec2 moveVector = vecArray[index];
     glm::ivec2 newLocation = ThePlayer->GetLocation() + moveVector;
-    if(TheMaze->IsLocationClear(newLocation))
-        ThePlayer->SetLocation(newLocation);
+    if(TheMaze->IsLocationWall(newLocation))
+        return;
     if(TheMaze->IsLocationGoal(newLocation))
+        ThePlayer->SetLocation(glm::ivec2(0,0));
+    else
         ThePlayer->SetLocation(newLocation);
 }
 
 void App::key_callback(GLFWwindow* window,
                   int key, int scancode, int action, int mods)
 {
-    if (action == GLFW_PRESS) 
+    // if (action == GLFW_PRESS) 
     {
+        std::cout << "Pressed: " << key << std::endl;
         switch(key) 
         {
             case GLFW_KEY_ESCAPE: // escape key pressed

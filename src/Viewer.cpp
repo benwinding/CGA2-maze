@@ -63,9 +63,17 @@ void PlayerViewer::update( Player &thePlayer )
     int x = location[0];
     int z = location[1];
 
+    std::cout << "                   x: " << x << std::endl;
+    std::cout << "                   z: " << z << std::endl;
+    std::cout << "                tilt: " << tilt << std::endl;
+    std::cout << "                 pan: " << pan << std::endl;
+    std::cout << "  cos(DEG2RAD(tilt)): " << cos(DEG2RAD(tilt)) << std::endl;
+    std::cout << "   sin(DEG2RAD(pan)): " << sin(DEG2RAD(pan)) << std::endl;
+
     glm::vec3 at(x, 1.0f, z);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
-    glm::vec3 look(x + sin(DEG2RAD(tilt)), 1.0f, z + cos(DEG2RAD(pan)));
+    // glm::vec3 look(x + cos(DEG2RAD(tilt)), 1.0f, z + sin(DEG2RAD(pan)));
+    glm::vec3 look(1.f,1.f,1.f);
 
     viewMtx = glm::lookAt(at, look, up);
 }

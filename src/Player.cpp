@@ -10,6 +10,9 @@
 Player::Player(CubeMesh *cubeMesh)
 {
     this->cubeMesh = cubeMesh;
+    this->pan = 0;
+    this->tilt = 0;
+    this->turnIncrement = 1;
 }
 
 // Setters
@@ -31,11 +34,11 @@ void Player::SetTilt(float tilt)
 // Move commands
 void Player::PanLeft()
 {
-    this->pan += turnIncrement;
+    this->pan -= turnIncrement;
 }
 void Player::PanRight()
 {
-    this->pan -= turnIncrement;
+    this->pan += turnIncrement;
 }
 void Player::TiltUp()
 {

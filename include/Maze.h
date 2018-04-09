@@ -23,7 +23,7 @@ private:
 public:
     Maze(CubeMesh *cubeMesh, Player *thePlayer);
     void SetUpMaze(int gridRows, int gridCols, int* mazeLayout);
-    bool IsLocationClear(glm::ivec2 pos);
+    bool IsLocationWall(glm::ivec2 pos);
     bool IsLocationGoal(glm::ivec2 pos);
 
     void renderWalls(int shaderID);

@@ -85,9 +85,8 @@ void Maze::renderGoal(int shaderID)
     	for (int j=0; j<sizeJ; ++j)
     	{
     		int gridValue = mazeLayout[i*sizeJ+j];
-            if(gridValue == 2) {
+            if(gridValue == 2)
                 this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
-            }
     	}
     }
 	glBindVertexArray(0);
@@ -101,12 +100,11 @@ void Maze::renderPlayer(int shaderID)
     if (modelUniformHandle == -1)
         exit(1);
 
-    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());   
-
+    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
     glm::ivec2 location = this->thePlayer->GetLocation();
     float i = location[0];
     float j = location[1];
-    this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 4, 0.2);
+    this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 4, 4, 4);
     glBindVertexArray(0);
     glFlush();
 }
@@ -116,23 +114,21 @@ int Maze::getLocationValue(glm::ivec2 pos)
     int i = pos[0];
     int j = pos[1];
     int size = this->gridCols;
-    std::cout << "Maze:: " << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
     if(i > size || i < 0) {
-        std::cout << "Maze:: " << "i out of bounds" << std::endl;
+        std::cout << "Maze:: " << "i out of bounds" << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
         return 1;
     }
     if(j > size || j < 0) {
-        std::cout << "Maze:: " << "j out of bounds" << std::endl;
+        std::cout << "Maze:: " << "j out of bounds" << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
         return 1;
     }
-
     int gridValue = mazeLayout[i*size+j];
     return gridValue;
 }
 
-bool Maze::IsLocationClear(glm::ivec2 pos)
+bool Maze::IsLocationWall(glm::ivec2 pos)
 {
-    return getLocationValue(pos) == 0;
+    return getLocationValue(pos) == 1;
 }
 
 bool Maze::IsLocationGoal(glm::ivec2 pos)
