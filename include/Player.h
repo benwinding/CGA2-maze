@@ -20,7 +20,6 @@ public:
     glm::ivec2 GetLocation();
     float GetPan();
     float GetTilt();
-    void renderPlayer(int shaderID);
 
     void SetLocation(glm::ivec2 newLocation);
     void SetPan(float pan);

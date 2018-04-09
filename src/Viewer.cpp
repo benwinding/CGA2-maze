@@ -45,51 +45,6 @@ ObjectViewer::ObjectViewer(glm::vec3 eye)
 
 void ObjectViewer::update( Player &thePlayer ) 
 {
-    float xRot, yRot;
-    // input.readDeltaAndReset( &yRot, &xRot );
-    
-    // if ( input.lMousePressed )
-    // {
-    //     // The first 3 rows of the view matrix are the camera x, y, z axes
-    //     // in world coordinate space. (see lecture 6)
-    //     glm::vec3 eyeX( viewMtx[0][0], viewMtx[1][0], viewMtx[2][0] );
-    //     glm::vec3 eyeY( viewMtx[0][1], viewMtx[1][1], viewMtx[2][1] );
-    //     glm::vec3 eyeZ( viewMtx[0][2], viewMtx[1][2], viewMtx[2][2] );
-
-    //     // Rotate about the eye's y axis.
-    //     if ( yRot != 0 )
-    //     {
-    //         float sinY = sin(DEG2RAD(yRot));
-    //         float cosY = cos(DEG2RAD(yRot));
-
-    //         glm::vec3 tmpX = eyeX;
-    //         eyeX = cosY*tmpX + sinY*eyeZ;
-    //         eyeZ = -sinY*tmpX + cosY*eyeZ;
-    //     }
-    //     // Rotate about the eye's x axis.
-    //     if ( xRot != 0 )
-    //     {
-    //         float sinX = sin(DEG2RAD(xRot));
-    //         float cosX = cos(DEG2RAD(xRot));
-
-    //         glm::vec3 tmpY = eyeY;
-    //         eyeY = cosX*tmpY - sinX*eyeZ;
-    //         eyeZ = sinX*tmpY + cosX*eyeZ;
-    //     }
-
-    //     // Update the view matrix with new eye axes.
-    //     viewMtx[0][0] = eyeX[0];
-    //     viewMtx[1][0] = eyeX[1];
-    //     viewMtx[2][0] = eyeX[2];
-        
-    //     viewMtx[0][1] = eyeY[0];
-    //     viewMtx[1][1] = eyeY[1];
-    //     viewMtx[2][1] = eyeY[2];
-        
-    //     viewMtx[0][2] = eyeZ[0];
-    //     viewMtx[1][2] = eyeZ[1];
-    //     viewMtx[2][2] = eyeZ[2];
-    // }
 }
 
 // Player Viewer

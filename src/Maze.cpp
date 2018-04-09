@@ -9,12 +9,13 @@
 
 #include "Maze.h"
 #include "App.h"
+#include "Player.h"
 
-Maze::Maze(CubeMesh *cubeMesh)
+Maze::Maze(CubeMesh *cubeMesh, Player *thePlayer)
 {
     this->cubeMesh = cubeMesh;
+    this->thePlayer = thePlayer;
 }
-
 
 void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
 {
@@ -90,8 +91,24 @@ void Maze::renderGoal(int shaderID)
     	}
     }
 	glBindVertexArray(0);
-
 	glFlush();
+}
+
+void Maze::renderPlayer(int shaderID)
+{
+    glUseProgram(shaderID);
+    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
+    if (modelUniformHandle == -1)
+        exit(1);
+
+    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());   
+
+    glm::ivec2 location = this->thePlayer->GetLocation();
+    float i = location[0];
+    float j = location[1];
+    this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 4, 0.2);
+    glBindVertexArray(0);
+    glFlush();
 }
 
 int Maze::getLocationValue(glm::ivec2 pos)

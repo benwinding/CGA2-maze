@@ -205,6 +205,7 @@ int main (int argc, char **argv)
     TheApp->setProjection();
     while (!glfwWindowShouldClose(window))
     {
+        TheApp->setProjection();
         TheApp->render();
 
         glfwSwapBuffers(window);

@@ -9,8 +9,8 @@ App::App(int winX, int winY)
     this->winX = winX;
     this->winY = winY;
     this->cubeMesh = new CubeMesh();
-    this->TheMaze = new Maze(this->cubeMesh);
     this->ThePlayer = new Player(this->cubeMesh);
+    this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
 
     this->ObjCam = new ObjectViewer(glm::vec3(0,5,15));
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0));    
@@ -47,8 +47,8 @@ void App::render()
     setupView(programID1);
     TheMaze->renderWalls(programID1);
     setupView(programID2);
+    TheMaze->renderPlayer(programID2);
     TheMaze->renderGoal(programID2);
-    ThePlayer->renderPlayer(programID2);
 }
 
 void App::MoveStraight(float moveAngle)
