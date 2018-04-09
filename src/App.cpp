@@ -11,6 +11,10 @@ App::App(int winX, int winY)
     this->cubeMesh = new CubeMesh();
     this->TheMaze = new Maze(this->cubeMesh);
     this->ThePlayer = new Player(this->cubeMesh);
+
+    this->ObjCam = new ObjectViewer(glm::vec3(0,5,15));
+    this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0));    
+    this->Camera = PlayerCam;
 }
 
 App::~App()
@@ -18,6 +22,8 @@ App::~App()
     delete this->cubeMesh;
     delete this->TheMaze;
     delete this->ThePlayer;
+    delete this->ObjCam;
+    delete this->PlayerCam;
 }
 
 void App::initializeMaze(int mazeSize, int* mazeConfig)

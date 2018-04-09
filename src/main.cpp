@@ -180,6 +180,8 @@ int main (int argc, char **argv)
     {
     	exit(1);
     }
+
+    TheApp = new App(winX, winY);
     TheApp->SetShaders(programID1, programID2);
 
     // Set OpenGL state we need for this application.
@@ -201,18 +203,12 @@ int main (int argc, char **argv)
     glfwSetFramebufferSizeCallback(window, reshape_callback);
 
     TheApp->setProjection();
-
-    bool firstRender = true;
     while (!glfwWindowShouldClose(window))
     {
         TheApp->render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-        if(firstRender)
-            TheApp->setProjection();
-        firstRender = false;
     }
 
     // Clean up
