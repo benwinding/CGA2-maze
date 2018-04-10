@@ -64,7 +64,7 @@ void App::MoveStraight(float moveAngle)
     if(TheMaze->IsLocationWall(newLocation))
         return;
     if(TheMaze->IsLocationGoal(newLocation))
-        ThePlayer->SetLocation(glm::ivec2(0,0));
+        ThePlayer->Reset();
     else
         ThePlayer->SetLocation(newLocation);
 }

@@ -16,6 +16,7 @@ private:
 
 public:
     Player(CubeMesh *cubeMesh);
+    void Reset();
 
     glm::ivec2 GetLocation();
     float GetPan();

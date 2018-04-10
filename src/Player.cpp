@@ -10,6 +10,12 @@
 Player::Player(CubeMesh *cubeMesh)
 {
     this->cubeMesh = cubeMesh;
+    this->Reset();
+}
+
+void Player::Reset()
+{
+    this->location = glm::ivec2(0,0);
     this->pan = 90;
     this->tilt = 90;
     this->turnIncrement = 3;
