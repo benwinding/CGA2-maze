@@ -15,14 +15,16 @@ endif
 
 CC = g++
 EXE = assign2
+OUT_DIR = out/
+SRC_DIR = src/
 
-CPP_FILES = $(wildcard src/*.cpp)
-O_FILES = $(addprefix out/, $(notdir $(CPP_FILES:%.cpp=%.o)))
-D_FILES = $(addprefix out/, $(notdir $(CPP_FILES:%.cpp=%.d)))
+CPP_FILES = $(wildcard $(SRC_DIR)*.cpp)
+O_FILES = $(addprefix $(OUT_DIR), $(notdir $(CPP_FILES:%.cpp=%.o)))
+D_FILES = $(addprefix $(OUT_DIR), $(notdir $(CPP_FILES:%.cpp=%.d)))
 
 all: $(EXE)
 
-out/%.o: src/%.cpp
+$(OUT_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p out
 	$(CC) $(CPPFLAGS) -c -MMD -o $@ $<
 	
@@ -32,4 +34,5 @@ $(EXE): $(O_FILES)
 	$(CC) -o $(EXE) $(O_FILES) $(GL_LIBS)
 
 clean:
-	rm -f out/* $(EXE)$(EXT)
+	rm -f $(O_FILES) $(D_FILES) $(EXE)$(EXT)
+

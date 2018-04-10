@@ -103,7 +103,7 @@ void PrintHelp()
         ~~~~~~~ By Ben Winding ~~~~~~~~
 
     Usage: 
-        ./assign2 FILENAME
+        ./assign2 MAZE_FILE
 
     Keyboard:
         UP    = Move Forward
@@ -117,10 +117,9 @@ void PrintHelp()
         ESC   = Exit Program
 
         T     = Textures on/off
-        C     = Collisions on/off
 
-        1 = First Person View (Mouse disabled)
-        2 = World View (Mouse enabled)
+        1 = First Person View
+        2 = World View (cheating)
 
     )V0G0N";
     std::cout << helpScreen << std::endl;

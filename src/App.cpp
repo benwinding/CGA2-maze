@@ -61,7 +61,6 @@ void App::MoveStraight(float moveAngle)
     };
     glm::ivec2 moveVector = vecArray[index];
     glm::ivec2 newLocation = ThePlayer->GetLocation() + moveVector;
-    std::cout << "New Pan: " << (int)newPan % 360 << ", New Location: " << glm::to_string(moveVector) << std::endl;
     if(TheMaze->IsLocationWall(newLocation))
         return;
     if(TheMaze->IsLocationGoal(newLocation))
