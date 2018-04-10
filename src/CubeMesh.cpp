@@ -10,6 +10,8 @@
 #define CUBE_NUM_TRIS 12
 #define VALS_PER_VERT 3
 
+#define DEG2RAD(x) ((x)*M_PI/180.0) 
+
 CubeMesh::CubeMesh()
 {
     createCubeVAO();
@@ -20,14 +22,47 @@ int CubeMesh::getCubeVAOHandle()
     return this->cubeVAOHandle;
 }
 
-void CubeMesh::drawCube(int modelUniformHandle, float tx, float ty, float tz, float sx, float sy, float sz)
+void CubeMesh::Reset()
 {
-    glm::mat4 model;
-    model = glm::mat4();
-    model = glm::translate( model, glm::vec3(tx,ty,tz));
-    model = glm::scale( model, glm::vec3(sx,sy,sz));
+    this->model = glm::mat4();
+}
+void CubeMesh::Translate(float tx, float ty, float tz)
+{
+    this->model = glm::translate(this->model, glm::vec3(tx, ty, tz));
+}
+void CubeMesh::Scale(float sx, float sy, float sz)
+{
+    this->model = glm::scale(this->model, glm::vec3(sx, sy, sz));
+}
+void CubeMesh::RotateX(float rx)
+{
+    float rRads = DEG2RAD(rx);
+    this->model = glm::rotate(this->model, rRads, glm::vec3(1, 0, 0));
+}
+void CubeMesh::RotateY(float ry)
+{
+    float rRads = DEG2RAD(ry);
+    this->model = glm::rotate(this->model, rRads, glm::vec3(0, 1, 0));
+}
+void CubeMesh::RotateZ(float rz)
+{
+    float rRads = DEG2RAD(rz);
+    this->model = glm::rotate(this->model, rRads, glm::vec3(0, 0, 1));
+}
+void CubeMesh::Draw(int modelUniformHandle)
+{
     glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
-    glDrawElements(GL_TRIANGLES, CUBE_NUM_TRIS*3, GL_UNSIGNED_INT, 0);    
+    glDrawElements(GL_TRIANGLES, CUBE_NUM_TRIS*3, GL_UNSIGNED_INT, 0);
+}
+
+void CubeMesh::drawCube(int modelUniformHandle, 
+    float tx, float ty, float tz, 
+    float sx, float sy, float sz)
+{
+    this->Reset();
+    this->Translate(tx,ty,tz);
+    this->Scale(sx,sy,sz);
+    this->Draw(modelUniformHandle);
 }
 
 void CubeMesh::createCubeVAO()

@@ -12,7 +12,7 @@ App::App(int winX, int winY)
     this->ThePlayer = new Player(this->cubeMesh);
     this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
 
-    this->ObjCam = new ObjectViewer(glm::vec3(0,5,15));
+    this->ObjCam = new ObjectViewer(glm::vec3(0,10,0.5));
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0));    
     this->Camera = PlayerCam;
 }
@@ -74,9 +74,8 @@ void App::MoveStraight(float moveAngle)
 void App::key_callback(GLFWwindow* window,
                   int key, int scancode, int action, int mods)
 {
-    // if (action == GLFW_PRESS) 
+    if (action == GLFW_PRESS) 
     {
-        std::cout << "Pressed: " << key << std::endl;
         switch(key) 
         {
             case GLFW_KEY_ESCAPE: // escape key pressed
@@ -96,21 +95,24 @@ void App::key_callback(GLFWwindow* window,
             case GLFW_KEY_DOWN:
                 this->MoveStraight(0);
                 break;
-            case GLFW_KEY_LEFT:
-                ThePlayer->PanLeft();
-                break;
-            case GLFW_KEY_RIGHT:
-                ThePlayer->PanRight();
-                break;
-            case GLFW_KEY_A:
-                ThePlayer->TiltUp();
-                break;
-            case GLFW_KEY_Z:
-                ThePlayer->TiltDown();
-                break;
-            default:
-                break;
         }
+    }
+    switch(key) 
+    {
+        case GLFW_KEY_LEFT:
+            ThePlayer->PanLeft();
+            break;
+        case GLFW_KEY_RIGHT:
+            ThePlayer->PanRight();
+            break;
+        case GLFW_KEY_A:
+            ThePlayer->TiltUp();
+            break;
+        case GLFW_KEY_Z:
+            ThePlayer->TiltDown();
+            break;
+        default:
+            break;
     }
 }   
 

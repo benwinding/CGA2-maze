@@ -11,6 +11,8 @@
 #include "App.h"
 #include "Player.h"
 
+#define DEG2RAD(x) ((x)*M_PI/180.0) 
+
 Maze::Maze(CubeMesh *cubeMesh, Player *thePlayer)
 {
     this->cubeMesh = cubeMesh;
@@ -60,7 +62,9 @@ void Maze::renderWalls(int shaderID)
         {
             int gridValue = mazeLayout[i*sizeJ+j];
             if(gridValue == 1) {
-                this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 1, 1, 1);
+                this->cubeMesh->Reset();
+                this->cubeMesh->Translate(i*2 - mazeX + 1, 1, j*2 - mazeZ + 1);
+                this->cubeMesh->Draw(modelUniformHandle);
             }
         }
     }
@@ -86,7 +90,12 @@ void Maze::renderGoal(int shaderID)
     	{
     		int gridValue = mazeLayout[i*sizeJ+j];
             if(gridValue == 2)
-                this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 0.2, 0.2, 0.2);
+            {
+                this->cubeMesh->Reset();
+                this->cubeMesh->Translate(i*2 - mazeX + 1, 1, j*2 - mazeZ + 1);
+                this->cubeMesh->Scale(0.2, 0.2, 0.2);
+                this->cubeMesh->Draw(modelUniformHandle);
+            }
     	}
     }
 	glBindVertexArray(0);
@@ -101,10 +110,27 @@ void Maze::renderPlayer(int shaderID)
         exit(1);
 
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
+
     glm::ivec2 location = this->thePlayer->GetLocation();
     float i = location[0];
     float j = location[1];
-    this->cubeMesh->drawCube(modelUniformHandle, i*2 - mazeX + 1, 1, j*2 - mazeZ + 1, 2, 4, 2);
+    float pan = this->thePlayer->GetPan();
+    float tilt = this->thePlayer->GetTilt();
+
+    float x = i*2 - mazeX;
+    float z = j*2 - mazeZ;
+
+    // std::cout << "" 
+    // << "   x=" << x << std::endl
+    // << "   y=" << z << std::endl
+    // << " pan=" << pan << std::endl
+    // << "tilt=" << tilt << std::endl;
+    this->cubeMesh->Reset();
+    // this->cubeMesh->RotateY(pan);
+    this->cubeMesh->Translate(0, 1, x * sin(DEG2RAD(pan)));
+    this->cubeMesh->Scale(0.5, 4, 0.5);
+    // this->cubeMesh->Draw(modelUniformHandle);
+
     glBindVertexArray(0);
     glFlush();
 }

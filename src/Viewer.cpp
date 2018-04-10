@@ -57,18 +57,17 @@ PlayerViewer::PlayerViewer(glm::vec3 eye)
 void PlayerViewer::update( Player &thePlayer ) 
 {
     glm::ivec2 location = thePlayer.GetLocation();
-    float pan = thePlayer.GetPan();
-    float tilt = thePlayer.GetTilt();
+    float pan = DEG2RAD(thePlayer.GetPan());
+    float tilt = DEG2RAD(thePlayer.GetTilt());
 
     int x = location[0];
     int z = location[1];
 
     glm::vec3 at(x, 1.0f, z);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
-    glm::vec3 lookPan(cos(DEG2RAD(pan)), 0.0f, sin(DEG2RAD(pan)));
-    glm::vec3 lookTilt(0.0f, sin(DEG2RAD(tilt)), 0.f);
+    glm::vec3 cameraFocus(sin(tilt)*cos(pan), cos(tilt), sin(tilt)*sin(pan));
 
-    glm::vec3 lookBoth = at + lookPan + lookTilt;
+    glm::vec3 lookBoth = at + cameraFocus;
 
     viewMtx = glm::lookAt(at, lookBoth, up);
 }
