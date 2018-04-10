@@ -30,10 +30,9 @@ private:
     void MoveStraight(float angle);
   
 public:
-    App(int winX, int winY);
+    App(int winX, int winY, int mazeSize, int* mazeConfig);
     ~App();
 
-    void initializeMaze(int mazeSize, int* mazeConfig);
     void SetShaders(int programID1, int programID2);
     void render();
 

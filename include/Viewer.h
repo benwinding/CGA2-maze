@@ -28,14 +28,14 @@ protected:
     glm::vec3 initUp;
 
 public:
-    Viewer( glm::vec3 eye );
+    Viewer(glm::vec3 eye);
     virtual ~Viewer() = 0;
 
     const glm::mat4 getViewMtx() const;
     //    void orthogonaliseViewMtx();
     void reset();
 
-    virtual void update( Player &thePlayer ) = 0;
+    virtual void update(Player &thePlayer) = 0;
 };
 
 
@@ -47,9 +47,9 @@ public:
 class ObjectViewer : public Viewer
 {
 public:
-    ObjectViewer( glm::vec3 eye );
+    ObjectViewer(glm::vec3 eye);
 
-    virtual void update( Player &thePlayer );
+    virtual void update(Player &thePlayer);
 };
 
 /**
@@ -60,11 +60,12 @@ class PlayerViewer : public Viewer
 {
 private: 
     glm::vec3 currentEyeX;
+    int mazeSize;
 
 public:
-    PlayerViewer( glm::vec3 eye );
+    PlayerViewer(glm::vec3 eye, int mazeSize);
 
-    virtual void update( Player &thePlayer );
+    virtual void update(Player &thePlayer);
 };
 
 #endif // VIEWER_H

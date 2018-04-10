@@ -19,7 +19,7 @@ int winY = 500;
 App* TheApp;
 
 // Called when the window is resized.
-void reshape_callback( GLFWwindow *window, int x, int y ) 
+void reshape_callback(GLFWwindow *window, int x, int y) 
 {
     winX = x;
     winY = y;
@@ -91,8 +91,7 @@ int ParseAndReadMazeFile(int argc, char **argv)
         std::cout << "No filename recieved, exitting..." << std::endl;
         return 0;
     }
-
-    TheApp->initializeMaze(mazeSize, mazeLayout);
+    TheApp = new App(winX, winY, mazeSize, mazeLayout);
     return 1;
 }
 
@@ -167,6 +166,12 @@ int main (int argc, char **argv)
 		exit(1);
   	}
 
+    // Parse program arguments and read maze
+    if (!ParseAndReadMazeFile(argc, argv)) 
+    {
+        exit(1);
+    }
+
     std::string prefix = "res/shaders/";
     // Set up the shaders we are to use. 0 indicates error.
     int programID1 = LoadShaders(prefix + "mazewalls.vert", prefix + "mazewalls.frag");
@@ -180,8 +185,6 @@ int main (int argc, char **argv)
     {
     	exit(1);
     }
-
-    TheApp = new App(winX, winY);
     TheApp->SetShaders(programID1, programID2);
 
     // Set OpenGL state we need for this application.
@@ -191,13 +194,7 @@ int main (int argc, char **argv)
     
     // Print program help
     PrintHelp();
-
-    // Parse program arguments and read maze
-    if (!ParseAndReadMazeFile(argc, argv)) 
-    {
-        exit(1);
-    }
-    
+   
     // Define callback functions and start main loop
     glfwSetKeyCallback(window, key_callback);
     glfwSetFramebufferSizeCallback(window, reshape_callback);

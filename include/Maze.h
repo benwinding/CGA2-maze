@@ -13,7 +13,8 @@ class Maze
 private:
     int gridRows, gridCols;
     int* mazeLayout;
-    float mazeX, mazeY, mazeZ;
+    int mazeSize;
+    float mazeY;
     float wallThickness;
     CubeMesh *cubeMesh;
     Player *thePlayer;
@@ -29,6 +30,8 @@ public:
     void renderWalls(int shaderID);
     void renderGoal(int shaderID);
     void renderPlayer(int shaderID);
+
+    int GetMazeSize();
 };
 
 #endif

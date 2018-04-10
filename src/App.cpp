@@ -1,19 +1,22 @@
 #include <stdio.h>
 #include <iostream>
-
 #include <cmath>
+
+#include "glm/gtx/string_cast.hpp"
+
 #include "App.h"
 
-App::App(int winX, int winY)
+App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 {
     this->winX = winX;
     this->winY = winY;
     this->cubeMesh = new CubeMesh();
     this->ThePlayer = new Player(this->cubeMesh);
     this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
+    this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
 
     this->ObjCam = new ObjectViewer(glm::vec3(0,10,0.5));
-    this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0));    
+    this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0), this->TheMaze->GetMazeSize());
     this->Camera = PlayerCam;
 }
 
@@ -24,11 +27,6 @@ App::~App()
     delete this->ThePlayer;
     delete this->ObjCam;
     delete this->PlayerCam;
-}
-
-void App::initializeMaze(int mazeSize, int* mazeConfig)
-{
-  this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
 }
 
 void App::SetShaders(int programID1, int programID2)
@@ -54,15 +52,16 @@ void App::render()
 void App::MoveStraight(float moveAngle)
 {
     float newPan = moveAngle + ThePlayer->GetPan();
-    int index = (int)round(moveAngle / 90.f) % 4;
+    int index = (int)round(newPan / 90.f) % 4;
     glm::ivec2 vecArray[4] = {
+        glm::ivec2(-1,0),
+        glm::ivec2(0,-1),
         glm::ivec2(1,0),
         glm::ivec2(0,1),
-        glm::ivec2(-1,0),
-        glm::ivec2(0,-1)
     };
     glm::ivec2 moveVector = vecArray[index];
     glm::ivec2 newLocation = ThePlayer->GetLocation() + moveVector;
+    std::cout << "New Pan: " << (int)newPan % 360 << ", New Location: " << glm::to_string(moveVector) << std::endl;
     if(TheMaze->IsLocationWall(newLocation))
         return;
     if(TheMaze->IsLocationGoal(newLocation))

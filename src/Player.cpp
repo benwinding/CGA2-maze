@@ -10,7 +10,7 @@
 Player::Player(CubeMesh *cubeMesh)
 {
     this->cubeMesh = cubeMesh;
-    this->pan = 0;
+    this->pan = 90;
     this->tilt = 90;
     this->turnIncrement = 3;
 }

@@ -26,29 +26,35 @@ void CubeMesh::Reset()
 {
     this->model = glm::mat4();
 }
+
 void CubeMesh::Translate(float tx, float ty, float tz)
 {
     this->model = glm::translate(this->model, glm::vec3(tx, ty, tz));
 }
+
 void CubeMesh::Scale(float sx, float sy, float sz)
 {
     this->model = glm::scale(this->model, glm::vec3(sx, sy, sz));
 }
+
 void CubeMesh::RotateX(float rx)
 {
     float rRads = DEG2RAD(rx);
     this->model = glm::rotate(this->model, rRads, glm::vec3(1, 0, 0));
 }
+
 void CubeMesh::RotateY(float ry)
 {
     float rRads = DEG2RAD(ry);
     this->model = glm::rotate(this->model, rRads, glm::vec3(0, 1, 0));
 }
+
 void CubeMesh::RotateZ(float rz)
 {
     float rRads = DEG2RAD(rz);
     this->model = glm::rotate(this->model, rRads, glm::vec3(0, 0, 1));
 }
+
 void CubeMesh::Draw(int modelUniformHandle)
 {
     glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
@@ -96,15 +102,13 @@ void CubeMesh::createCubeVAO()
 
     // Set vertex attribute
     glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, VALS_PER_VERT, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Set element attributes. Notice the change to using GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 sizeof(Indices), Indices, GL_STATIC_DRAW);   
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);   
 
     // Un-bind
     glBindBuffer(GL_ARRAY_BUFFER, 0);

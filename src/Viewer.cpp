@@ -48,24 +48,32 @@ void ObjectViewer::update( Player &thePlayer )
 }
 
 // Player Viewer
-PlayerViewer::PlayerViewer(glm::vec3 eye)
+PlayerViewer::PlayerViewer(glm::vec3 eye, int mazeSize)
     : Viewer(eye)
 {
+    this->mazeSize = mazeSize;
     reset();
 }
 
-void PlayerViewer::update( Player &thePlayer ) 
+void PlayerViewer::update(Player &thePlayer)
 {
     glm::ivec2 location = thePlayer.GetLocation();
     float pan = DEG2RAD(thePlayer.GetPan());
     float tilt = DEG2RAD(thePlayer.GetTilt());
 
-    int x = location[0];
-    int z = location[1];
+    int i = location[0];
+    int j = location[1];
+
+    float x = i*2 - this->mazeSize + 1;
+    float z = j*2 - this->mazeSize + 1;
+
+    float camX = sin(tilt)*cos(pan);
+    float camY = cos(tilt);
+    float camZ = sin(tilt)*sin(pan);
 
     glm::vec3 at(x, 1.0f, z);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
-    glm::vec3 cameraFocus(sin(tilt)*cos(pan), cos(tilt), sin(tilt)*sin(pan));
+    glm::vec3 cameraFocus(camX, camY, camZ);
 
     glm::vec3 lookBoth = at + cameraFocus;
 
