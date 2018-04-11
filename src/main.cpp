@@ -13,7 +13,7 @@
 #include "App.h"
 #include "Shader.hpp"
 
-int winX = 500;
+int winX = 700;
 int winY = 500;
 
 App* TheApp;

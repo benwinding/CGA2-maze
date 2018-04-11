@@ -42,25 +42,25 @@ void Player::PanLeft()
 {
     this->pan -= turnIncrement;
     if(this->pan <= 0)
-      this->pan = 360;
+        this->pan = 360;
 }
 void Player::PanRight()
 {
     this->pan += turnIncrement;
     if(this->pan >= 360)
-      this->pan = 0;
+        this->pan = 0;
 }
 void Player::TiltUp()
 {
     this->tilt -= turnIncrement; 
     if(this->tilt <= 30)
-      this->tilt = 30;
+        this->tilt = 30;
 }
 void Player::TiltDown()
 {
     this->tilt += turnIncrement; 
     if(this->tilt >= 150)
-      this->tilt = 150;
+        this->tilt = 150;
 }
 
 // Getters
