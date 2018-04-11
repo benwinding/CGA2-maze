@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Viewer.h"
 #include "CubeMesh.h"
+#include "Texture.h"
 
 // Repsonsible Composing the program and 
 class App {
@@ -21,6 +22,9 @@ private:
 
     ObjectViewer *ObjCam;
     PlayerViewer *PlayerCam;
+
+    Texture *TextureGround;
+    Texture *TextureWalls;
 
     int winX, winY;
 

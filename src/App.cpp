@@ -18,6 +18,9 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->ObjCam = new ObjectViewer(glm::vec3(0,10,0.5));
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0), this->TheMaze->GetMazeSize());
     this->Camera = PlayerCam;
+
+    this->TextureGround = new Texture("crate.png");
+    this->TextureWalls = new Texture("crate.png");
 }
 
 App::~App()
@@ -42,8 +45,11 @@ void App::render()
 
     Camera->update(*ThePlayer);
     
+    TextureWalls->Use();
     setupView(programID1);
     TheMaze->renderWalls(programID1);
+    
+    TextureWalls->Use();
     setupView(programID2);
     TheMaze->renderPlayer(programID2);
     TheMaze->renderGoal(programID2);
