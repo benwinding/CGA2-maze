@@ -9,7 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+// #include "stb_image.h"
 
 #define NUM_TEXTURES 2
 
@@ -19,7 +19,7 @@ class Texture
 	static GLuint TexID[NUM_TEXTURES];
 	int createTexture();
 	int textureIndex;
-	void SetTexture(std::string texturePath);
+	void SetTexture(std::string texturePath, int shaderProgramId);
 
 public:
 	Texture(std::string texturePath);

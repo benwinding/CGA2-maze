@@ -127,16 +127,20 @@ void Maze::renderPlayer(int shaderID)
     float z = j*2 - mazeSize + 1;
 
     float pan = this->thePlayer->GetPan();
+    float tilt = this->thePlayer->GetTilt();
 
+    // Render Player Vertical Section
     this->cubeMesh->Reset();
     this->cubeMesh->Translate(x, 0, z);
     this->cubeMesh->RotateY(-pan);
     this->cubeMesh->Scale(0.1, 4, 0.1);
     this->cubeMesh->Draw(modelUniformHandle);
 
+    // Render Player Direction Stick
     this->cubeMesh->Reset();
     this->cubeMesh->Translate(x, 2, z);
     this->cubeMesh->RotateY(-pan);
+    this->cubeMesh->RotateZ(-(tilt-90));
     this->cubeMesh->Scale(1, 0.1, 0.1);
     this->cubeMesh->Translate(1, 0, 0);
     this->cubeMesh->Draw(modelUniformHandle);
