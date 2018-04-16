@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <iostream>
 #include <GL/glew.h>
 
 #include "glm/glm.hpp"
@@ -22,9 +24,11 @@ int CubeMesh::getCubeVAOHandle()
     return this->cubeVAOHandle;
 }
 
-void CubeMesh::Reset()
+void CubeMesh::Reset(int shaderID)
 {
     this->model = glm::mat4();
+    this->shaderID = shaderID;
+    this->textureScale = glm::vec2(1.f);
 }
 
 void CubeMesh::Translate(float tx, float ty, float tz)
@@ -55,20 +59,33 @@ void CubeMesh::RotateZ(float rz)
     this->model = glm::rotate(this->model, rRads, glm::vec3(0, 0, 1));
 }
 
-void CubeMesh::Draw(int modelUniformHandle)
+void CubeMesh::Draw()
 {
-    glUniformMatrix4fv( modelUniformHandle, 1, false, glm::value_ptr(model) );
+    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
+    if (modelUniformHandle == -1)
+        exit(1);
+    glUniformMatrix4fv(modelUniformHandle, 1, false, glm::value_ptr(model));
+
+    this->scaleUniformHandle = glGetUniformLocation(shaderID, "scale");
+    if (scaleUniformHandle == -1)
+        exit(1);
+    glUniform2fv(this->scaleUniformHandle, 1, glm::value_ptr(this->textureScale));
+
     glDrawArrays(GL_TRIANGLES, 0, CUBE_NUM_VERTICES);
 }
 
-void CubeMesh::drawCube(int modelUniformHandle, 
+void CubeMesh::MakeCube(int shaderID, 
     float tx, float ty, float tz, 
     float sx, float sy, float sz)
 {
-    this->Reset();
+    this->Reset(shaderID);
     this->Translate(tx,ty,tz);
     this->Scale(sx,sy,sz);
-    this->Draw(modelUniformHandle);
+}
+
+void CubeMesh::SetTextureScale(float s, float t)
+{
+    this->textureScale = glm::vec2(s, t);
 }
 
 void CubeMesh::createCubeVAO()

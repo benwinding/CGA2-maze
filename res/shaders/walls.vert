@@ -11,13 +11,15 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
+uniform vec2 scale;
+
 out vec2 st;
 
 void main(void)
 {
-	st = a_tex_coord;
+	st = a_tex_coord * scale;
 
-    // a_vertex is vertex position in object coordinates
-    // gl_position is vertex position in camera coordinates
+  // a_vertex is vertex position in object coordinates
+  // gl_position is vertex position in camera coordinates
 	gl_Position = projection * view * model * vec4(a_vertex, 1.0);
 }

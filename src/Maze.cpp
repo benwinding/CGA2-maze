@@ -35,23 +35,40 @@ void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
 }
 
 /**
- Draw the table as a set of scaled blocks.
+ Draw the maze extents and floor
+*/  
+void Maze::renderMazeBoundaries(int shaderID)
+{
+    glUseProgram(shaderID);
+    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
+
+    // First the floor
+    this->cubeMesh->MakeCube(shaderID, 0, -wallThickness, 0, mazeSize, wallThickness, mazeSize);
+    this->cubeMesh->SetTextureScale(mazeSize, mazeSize);
+    this->cubeMesh->Draw();
+    this->cubeMesh->MakeCube(shaderID, 0, 1.f+wallThickness, mazeSize+wallThickness, mazeSize+2*wallThickness, wallThickness+1, wallThickness);
+    this->cubeMesh->SetTextureScale(mazeSize, 1.f);
+    this->cubeMesh->Draw();
+    this->cubeMesh->MakeCube(shaderID, 0, 1.f+wallThickness, -mazeSize-wallThickness, mazeSize+2*wallThickness, wallThickness+1, wallThickness);
+    this->cubeMesh->SetTextureScale(mazeSize, 1.f);
+    this->cubeMesh->Draw();
+    this->cubeMesh->MakeCube(shaderID, mazeSize+wallThickness, 1.f+wallThickness, 0, wallThickness, wallThickness+1, mazeSize);
+    this->cubeMesh->SetTextureScale(1.f, mazeSize);
+    this->cubeMesh->Draw();
+    this->cubeMesh->MakeCube(shaderID, -mazeSize-wallThickness, 1.f+wallThickness, 0, wallThickness, wallThickness+1, mazeSize);
+    this->cubeMesh->SetTextureScale(1.f, mazeSize);
+    this->cubeMesh->Draw();
+    glBindVertexArray(0);
+    glFlush();
+}
+
+/**
+ Draw the maze layout as a set of scaled blocks.
 */  
 void Maze::renderWalls(int shaderID)
 {
     glUseProgram(shaderID);
-    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
-    if (modelUniformHandle == -1)
-        exit(1);
-
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
-
-    // First the floor
-    this->cubeMesh->drawCube(modelUniformHandle, 0, -wallThickness, 0, mazeSize, wallThickness, mazeSize);
-    this->cubeMesh->drawCube(modelUniformHandle, 0, -(wallThickness-1), mazeSize+wallThickness, mazeSize+2*wallThickness, wallThickness+1, wallThickness);
-    this->cubeMesh->drawCube(modelUniformHandle, 0, -(wallThickness-1), -mazeSize-wallThickness, mazeSize+2*wallThickness, wallThickness+1, wallThickness);
-    this->cubeMesh->drawCube(modelUniformHandle, mazeSize+wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeSize);
-    this->cubeMesh->drawCube(modelUniformHandle, -mazeSize-wallThickness, -(wallThickness-1), 0, wallThickness, wallThickness+1, mazeSize);
 
     // Render Current Maze Layout
     int sizeI = this->gridRows;
@@ -64,9 +81,9 @@ void Maze::renderWalls(int shaderID)
             if(gridValue == 1) {
                 float x = i*2 - mazeSize + 1;
                 float z = j*2 - mazeSize + 1;
-                this->cubeMesh->Reset();
+                this->cubeMesh->Reset(shaderID);
                 this->cubeMesh->Translate(x, 1, z);
-                this->cubeMesh->Draw(modelUniformHandle);
+                this->cubeMesh->Draw();
             }
         }
     }
@@ -77,10 +94,6 @@ void Maze::renderWalls(int shaderID)
 void Maze::renderGoal(int shaderID)
 {
     glUseProgram(shaderID);
-    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
-    if (modelUniformHandle == -1)
-        exit(1);
-
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     // Render Current Maze Layout
@@ -95,10 +108,10 @@ void Maze::renderGoal(int shaderID)
             {
                 float x = i*2 - mazeSize + 1;
                 float z = j*2 - mazeSize + 1;
-                this->cubeMesh->Reset();
+                this->cubeMesh->Reset(shaderID);
                 this->cubeMesh->Translate(x, 1, z);
                 this->cubeMesh->Scale(0.2, 0.2, 0.2);
-                this->cubeMesh->Draw(modelUniformHandle);
+                this->cubeMesh->Draw();
             }
     	}
     }
@@ -114,9 +127,6 @@ void Log(std::string varName, float varVal)
 void Maze::renderPlayer(int shaderID)
 {
     glUseProgram(shaderID);
-    int modelUniformHandle = glGetUniformLocation(shaderID, "model");
-    if (modelUniformHandle == -1)
-        exit(1);
 
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
@@ -130,20 +140,20 @@ void Maze::renderPlayer(int shaderID)
     float tilt = this->thePlayer->GetTilt();
 
     // Render Player Vertical Section
-    this->cubeMesh->Reset();
+    this->cubeMesh->Reset(shaderID);
     this->cubeMesh->Translate(x, 0, z);
     this->cubeMesh->RotateY(-pan);
     this->cubeMesh->Scale(0.1, 4, 0.1);
-    this->cubeMesh->Draw(modelUniformHandle);
+    this->cubeMesh->Draw();
 
     // Render Player Direction Stick
-    this->cubeMesh->Reset();
+    this->cubeMesh->Reset(shaderID);
     this->cubeMesh->Translate(x, 2, z);
     this->cubeMesh->RotateY(-pan);
     this->cubeMesh->RotateZ(-(tilt-90));
     this->cubeMesh->Scale(1, 0.1, 0.1);
     this->cubeMesh->Translate(1, 0, 0);
-    this->cubeMesh->Draw(modelUniformHandle);
+    this->cubeMesh->Draw();
 
     glBindVertexArray(0);
     glFlush();

@@ -6,18 +6,23 @@ class CubeMesh
     unsigned int cubeVAOHandle;
     void createCubeVAO();
     glm::mat4 model;
+    int shaderID;
+    int scaleUniformHandle;
+    glm::vec2 textureScale;
+
 public:
     CubeMesh();
 
-	void Reset();
+	void Reset(int shaderId);
 	void Translate(float tx, float ty, float tz);
 	void Scale(float sx, float sy, float sz);
 	void RotateX(float rx);
 	void RotateY(float ry);
 	void RotateZ(float ry);
-	void Draw(int modelUniformHandle);
+    void SetTextureScale(float s, float t);
+    void Draw();
 
-	void drawCube(int modelUniformHandle, 
+	void MakeCube(int shaderId, 
     float tx, float ty, float tz, 
     float sx, float sy, float sz);
 
