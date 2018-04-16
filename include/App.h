@@ -30,23 +30,26 @@ private:
 
     int shaderID1, shaderID2;
 
-    unsigned int programID1, programID2;
+    unsigned int programID1, programID2, programID3;
     void MoveStraight(float angle);
-  
+    bool TexturesOn;
+    int CompileShader(std::string vertPath, std::string fragPath);  
+    void SetShaders();
+    void toggleTextures();
 public:
     App(int winX, int winY, int mazeSize, int* mazeConfig);
     ~App();
 
-    void SetShaders(int programID1, int programID2);
     void render();
+
+    void key_callback(GLFWwindow* window,
+                  int key, int scancode, int action, int mods);
 
     void playerMove(int key);
     void cameraChange(int camera);
-    void setProjection();
 
+    void setProjection(int progId);
     void setupView(int progId);
-    void key_callback(GLFWwindow* window,
-                  int key, int scancode, int action, int mods);
 };
 
 #endif

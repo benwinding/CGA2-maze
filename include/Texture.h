@@ -19,6 +19,7 @@ class Texture
 public:
 	Texture(std::string texturePath);
 	void Use();
+	void DontUse();
 
 };
 

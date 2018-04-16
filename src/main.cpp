@@ -23,7 +23,6 @@ void reshape_callback(GLFWwindow *window, int x, int y)
 {
     winX = x;
     winY = y;
-    TheApp->setProjection();
     glViewport( 0, 0, x, y );
 }
 
@@ -171,23 +170,7 @@ int main (int argc, char **argv)
         exit(1);
     }
 
-    std::string prefix = "res/shaders/";
-    // Set up the shaders we are to use. 0 indicates error.
-    int programID1 = LoadShaders(prefix + "walls.vert", prefix + "walls.frag");
-    if (programID1 == 0) 
-    {
-        exit(1);
-    }
-  	// Set up the shaders we are to use. 0 indicates error.
-  	int programID2 = LoadShaders(prefix + "walls.vert", prefix + "walls.frag");
-  	if (programID2 == 0) 
-    {
-    	exit(1);
-    }
-    TheApp->SetShaders(programID1, programID2);
-
     // Set OpenGL state we need for this application.
-    glUseProgram(programID1);
     glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
     glEnable(GL_DEPTH_TEST);
     
@@ -198,10 +181,8 @@ int main (int argc, char **argv)
     glfwSetKeyCallback(window, key_callback);
     glfwSetFramebufferSizeCallback(window, reshape_callback);
 
-    TheApp->setProjection();
     while (!glfwWindowShouldClose(window))
     {
-        TheApp->setProjection();
         TheApp->render();
 
         glfwSwapBuffers(window);

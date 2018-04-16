@@ -4,7 +4,12 @@
 
 #include "glm/gtx/string_cast.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "App.h"
+#include "Shader.hpp"
 
 App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 {
@@ -21,6 +26,8 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 
     this->TextureGround = new Texture("res/star_wars_trench.png");
     this->TextureWalls = new Texture("res/crate.png");
+
+    this->SetShaders();
 }
 
 App::~App()
@@ -32,10 +39,24 @@ App::~App()
     delete this->PlayerCam;
 }
 
-void App::SetShaders(int programID1, int programID2)
+int App::CompileShader(std::string vertPath, std::string fragPath)
 {
-    this->programID1 = programID1;
-    this->programID2 = programID2;
+    int shaderId = LoadShaders(vertPath, fragPath);
+    if(shaderId == 0)
+    {
+        std::cout << "Failed to compile: " << vertPath << " and " << fragPath << std::endl; 
+    }
+    return shaderId;
+}
+
+void App::SetShaders()
+{
+    std::string prefix = "res/shaders/";
+    // Set up the shaders we are to use. 0 indicates error.
+    this->programID1 = CompileShader(prefix + "walls.vert", prefix + "walls.frag");
+    this->programID2 = CompileShader(prefix + "walls.vert", prefix + "walls.frag");
+    this->programID3 = CompileShader(prefix + "plain.vert", prefix + "plain.frag");
+    glUseProgram(this->programID1);
 }
 
 void App::render() 
@@ -45,15 +66,32 @@ void App::render()
 
     Camera->update(*ThePlayer);
     
-    setupView(programID1);
-    TextureGround->Use();
-    TheMaze->renderMazeBoundaries(programID1);
-    TextureWalls->Use();
-    TheMaze->renderWalls(programID1);
-    
-    setupView(programID2);
-    TheMaze->renderPlayer(programID2);
-    TheMaze->renderGoal(programID2);
+    if(this->TexturesOn)
+    {
+        setupView(programID1);
+        setProjection(programID1);
+        TextureGround->Use();
+        TheMaze->renderMazeBoundaries(programID1);
+        TextureWalls->Use();
+        TheMaze->renderWalls(programID1);        
+        setupView(programID2);
+        setProjection(programID2);
+        TheMaze->renderPlayer(programID2);
+        TheMaze->renderGoal(programID2);
+    }
+    else 
+    {
+        TextureGround->DontUse();
+        TextureWalls->DontUse();
+        setupView(programID3);
+        setProjection(programID3);
+        TheMaze->renderMazeBoundaries(programID3);
+        TheMaze->renderWalls(programID3);        
+        setupView(programID3);
+        setProjection(programID3);
+        TheMaze->renderPlayer(programID3);
+        TheMaze->renderGoal(programID3);
+    }
 }
 
 void App::MoveStraight(float moveAngle)
@@ -76,8 +114,7 @@ void App::MoveStraight(float moveAngle)
         ThePlayer->SetLocation(newLocation);
 }
 
-void App::key_callback(GLFWwindow* window,
-                  int key, int scancode, int action, int mods)
+void App::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action == GLFW_PRESS) 
     {
@@ -88,11 +125,12 @@ void App::key_callback(GLFWwindow* window,
                 break;
             case '1':
                 Camera = PlayerCam;
-                setProjection();
                 break;
             case '2':
                 Camera = ObjCam;
-                setProjection();
+                break;
+            case GLFW_KEY_T:
+                toggleTextures();
                 break;
             case GLFW_KEY_UP:
                 this->MoveStraight(180);
@@ -121,6 +159,12 @@ void App::key_callback(GLFWwindow* window,
     }
 }   
 
+void App::toggleTextures()
+{
+    this->TexturesOn = !this->TexturesOn;
+    std::cout << "Textures Toggled, value: " << this->TexturesOn << std::endl;
+}
+
 void App::setupView(int progId) 
 {
     // First load the viewing matrix from the current camera
@@ -134,14 +178,14 @@ void App::setupView(int progId)
     glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
 }
 
-void App::setProjection()
+void App::setProjection(int progId)
 {
     float fov = (float) M_PI / 2.f;
     glm::mat4 projection;
     projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
 
     // Load it to the shader program
-    int projHandle = glGetUniformLocation(programID1, "projection");
+    int projHandle = glGetUniformLocation(progId, "projection");
     if (projHandle == -1) {
         std::cout << "Uniform: projection_matrix is not an active uniform label\n";
     }

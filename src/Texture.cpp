@@ -21,6 +21,11 @@ void Texture::Use()
     glBindTexture(GL_TEXTURE_2D, this->handle);
 }
 
+void Texture::DontUse()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 int Texture::makeTextureHandle(std::string texturePath)
 {
     unsigned int texture;
