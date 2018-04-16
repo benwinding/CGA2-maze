@@ -9,9 +9,9 @@ out vec4 fragColour;
 void main(void)
 {
     // Try changing this colour...
-    vec4 colour = vec4(1.0, 1.0, 1.0, 1.0);
+    vec4 colour = vec4(1.0, 0.0, 1.0, 1.0);
     
     // Modulate (multiply) a preset colour with the texture colour
     // at this location.
-	fragColour = colour * texture(texMap, st);	
+    fragColour = texture(texMap, st);	
 }

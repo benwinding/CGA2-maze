@@ -122,7 +122,7 @@ void PrintHelp()
         2 = World View (cheating)
 
     )V0G0N";
-    std::cout << helpScreen << std::endl;
+    // std::cout << helpScreen << std::endl;
 }
 
 void key_callback(GLFWwindow* window,
@@ -173,13 +173,13 @@ int main (int argc, char **argv)
 
     std::string prefix = "res/shaders/";
     // Set up the shaders we are to use. 0 indicates error.
-    int programID1 = LoadShaders(prefix + "mazewalls.vert", prefix + "mazewalls.frag");
+    int programID1 = LoadShaders(prefix + "walls.vert", prefix + "walls.frag");
     if (programID1 == 0) 
     {
         exit(1);
     }
   	// Set up the shaders we are to use. 0 indicates error.
-  	int programID2 = LoadShaders(prefix + "mazegoal.vert", prefix + "mazegoal.frag");
+  	int programID2 = LoadShaders(prefix + "walls.vert", prefix + "walls.frag");
   	if (programID2 == 0) 
     {
     	exit(1);
