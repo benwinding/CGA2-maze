@@ -8,18 +8,13 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-// #include "stb_image.h"
-
 #define NUM_TEXTURES 2
 
 class Texture
 {
-	static int textureCount;
-	static GLuint TexID[NUM_TEXTURES];
+	int handle;
 	int createTexture();
-	int textureIndex;
-	void SetTexture(std::string texturePath, int shaderProgramId);
+    int makeTextureHandle(std::string texturePath);
 
 public:
 	Texture(std::string texturePath);

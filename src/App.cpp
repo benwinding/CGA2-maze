@@ -19,8 +19,8 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0), this->TheMaze->GetMazeSize());
     this->Camera = PlayerCam;
 
-    this->TextureGround = new Texture("crate.png");
-    this->TextureWalls = new Texture("crate.png");
+    this->TextureGround = new Texture("res/crate.png");
+    this->TextureWalls = new Texture("res/crate.png");
 }
 
 App::~App()
