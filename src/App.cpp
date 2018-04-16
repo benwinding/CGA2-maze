@@ -15,7 +15,7 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
     this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
 
-    this->ObjCam = new ObjectViewer(glm::vec3(0,10,0.5));
+    this->ObjCam = new ObjectViewer(glm::vec3(0,mazeSize*2,0.5));
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0), this->TheMaze->GetMazeSize());
     this->Camera = PlayerCam;
 
@@ -137,7 +137,7 @@ void App::setProjection()
 {
     float fov = (float) M_PI / 2.f;
     glm::mat4 projection;
-    projection = glm::perspective(fov, (float) winX / winY, 0.2f, 50.0f );
+    projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
 
     // Load it to the shader program
     int projHandle = glGetUniformLocation(programID1, "projection");
