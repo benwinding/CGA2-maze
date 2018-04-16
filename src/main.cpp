@@ -122,7 +122,7 @@ void PrintHelp()
         2 = World View (cheating)
 
     )V0G0N";
-    // std::cout << helpScreen << std::endl;
+    std::cout << helpScreen << std::endl;
 }
 
 void key_callback(GLFWwindow* window,
@@ -147,7 +147,7 @@ int main (int argc, char **argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create the window and OpenGL context
-    window = glfwCreateWindow(winX, winY, "Modelling and viewing", NULL, NULL);
+    window = glfwCreateWindow(winX, winY, "Assignment 2: Star Wars Trench Run", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
