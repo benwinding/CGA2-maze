@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <iostream>
 #include <fstream>
 
@@ -59,25 +60,29 @@ int ParseAndReadMazeFile(int argc, char **argv)
             char c;
             int i = 0;
             int j = 0;
+            infile >> std::noskipws;
+
             while (infile.get(c)) 
             {
                 int index = i*mazeSize+j;
-                if(c == '\n') 
-                    continue;
-                else if(c == ' ') {
+                if(c == ' ') {
                     mazeLayout[index] = 0;
                     std::cout << '_';
                 }
-                else if(c == '*') 
+                else if(c == '*') {
                     mazeLayout[index] = 1;
-                else if(c == 'X') 
+                    std::cout << '*';
+                }
+                else if(c == 'X') {
                     mazeLayout[index] = 2;
-                // std::cout << "(" << i << "," << j << ")=" << c << std::endl;
-                if(c != ' ')
-                    std::cout << c;
+                    std::cout << 'X';
+                }
+                else {
+                    continue;
+                }
                 if(i == mazeSize-1) {
-                    j++;
                     std::cout << std::endl;
+                    j++;
                 }
                 i = (i + 1) % (mazeSize);
             }
