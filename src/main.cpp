@@ -64,14 +64,17 @@ int ParseAndReadMazeFile(int argc, char **argv)
                 int index = i*mazeSize+j;
                 if(c == '\n') 
                     continue;
-                else if(c == ' ') 
+                else if(c == ' ') {
                     mazeLayout[index] = 0;
+                    std::cout << '_';
+                }
                 else if(c == '*') 
                     mazeLayout[index] = 1;
                 else if(c == 'X') 
                     mazeLayout[index] = 2;
                 // std::cout << "(" << i << "," << j << ")=" << c << std::endl;
-                std::cout << c;
+                if(c != ' ')
+                    std::cout << c;
                 if(i == mazeSize-1) {
                     j++;
                     std::cout << std::endl;
