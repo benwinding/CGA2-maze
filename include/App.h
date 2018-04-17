@@ -32,9 +32,9 @@ private:
 
     unsigned int programID1, programID2, programID3;
     void MoveStraight(float angle);
-    bool TexturesOn;
     int CompileShader(std::string vertPath, std::string fragPath);  
     void SetShaders();
+    bool TexturesOn;
     void toggleTextures();
 public:
     App(int winX, int winY, int mazeSize, int* mazeConfig);

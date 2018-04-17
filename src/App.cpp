@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <string.h>
 #include <cmath>
 
 #include "glm/gtx/string_cast.hpp"
@@ -18,6 +19,7 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->cubeMesh = new CubeMesh();
     this->ThePlayer = new Player(this->cubeMesh);
     this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
+    
     this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
 
     this->ObjCam = new ObjectViewer(glm::vec3(0,mazeSize*2,0.5));
@@ -26,6 +28,12 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 
     this->TextureGround = new Texture("res/star_wars_trench.png");
     this->TextureWalls = new Texture("res/crate.png");
+    this->TexturesOn = true;
+
+    // setupView(programID1);
+    // setProjection(programID1);
+    // TextureGround->Use();
+    // TextureWalls->Use();
 
     this->SetShaders();
 }

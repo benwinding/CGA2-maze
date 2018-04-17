@@ -77,7 +77,7 @@ void Maze::renderWalls(int shaderID)
     {
         for (int j=0; j<sizeJ; ++j)
         {
-            int gridValue = mazeLayout[i*sizeJ+j];
+            int gridValue = mazeLayout[j*sizeI+i];
             if(gridValue == 1) {
                 float x = i*2 - mazeSize + 1;
                 float z = j*2 - mazeSize + 1;
@@ -103,7 +103,7 @@ void Maze::renderGoal(int shaderID)
     {
     	for (int j=0; j<sizeJ; ++j)
     	{
-    		int gridValue = mazeLayout[i*sizeJ+j];
+            int gridValue = mazeLayout[j*sizeI+i];
             if(gridValue == 2)
             {
                 float x = i*2 - mazeSize + 1;
@@ -161,8 +161,8 @@ void Maze::renderPlayer(int shaderID)
 
 int Maze::getLocationValue(glm::ivec2 pos)
 {
-    int i = pos[0];
-    int j = pos[1];
+    int i = pos.x;
+    int j = pos.y;
     int size = this->gridCols;
     if(i >= size || i < 0) {
         std::cout << "Maze:: " << "i out of bounds" << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
@@ -172,7 +172,7 @@ int Maze::getLocationValue(glm::ivec2 pos)
         std::cout << "Maze:: " << "j out of bounds" << "i=" << i << ",j=" << j << ",size=" << size << std::endl;
         return 1;
     }
-    int gridValue = mazeLayout[i*size+j];
+    int gridValue = mazeLayout[j*size+i];
     return gridValue;
 }
 

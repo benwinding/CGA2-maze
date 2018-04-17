@@ -18,6 +18,7 @@ int winX = 700;
 int winY = 500;
 
 App* TheApp;
+bool helpActive = true;
 
 // Called when the window is resized.
 void reshape_callback(GLFWwindow *window, int x, int y) 
@@ -42,6 +43,8 @@ int ParseAndReadMazeFile(int argc, char **argv)
     int* mazeLayout;
     // Parse program arguments
     if(argc > 1) {
+        if(argc == 3)
+            helpActive = false;
         // Get first argument in argument array
         char* arg1 = argv[1];
         std::cout << "Program input: " << arg1 << '\n';
@@ -50,7 +53,7 @@ int ParseAndReadMazeFile(int argc, char **argv)
             infile.open(arg1);
             // Detect maze size
             std::string mazeSizeString; 
-            infile >> mazeSizeString;
+            getline(infile, mazeSizeString);
             mazeSize = std::stoi(mazeSizeString);
             std::cout << "Read Maze Size: " << mazeSize << std::endl;
             // Initialize maze layout array
@@ -80,11 +83,11 @@ int ParseAndReadMazeFile(int argc, char **argv)
                 else {
                     continue;
                 }
-                if(i == mazeSize-1) {
+                if(j == mazeSize-1) {
                     std::cout << std::endl;
-                    j++;
+                    i++;                  
                 }
-                i = (i + 1) % (mazeSize);
+                j = (j + 1) % (mazeSize);
             }
             std::cout << std::endl;
         } catch (std::exception const &e) {
@@ -129,7 +132,8 @@ void PrintHelp()
         2 = World View (cheating)
 
     )V0G0N";
-    std::cout << helpScreen << std::endl;
+    if(helpActive)
+        std::cout << helpScreen << std::endl;
 }
 
 void key_callback(GLFWwindow* window,
