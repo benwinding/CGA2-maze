@@ -5,7 +5,7 @@ $(info Platform="$(PLATFORM)")
 # sudo apt-get install libglfw3-dev libglew-dev libglm-dev
 GL_LIBS = `pkg-config --static --libs glfw3 glew` 
 EXT = 
-CPPFLAGS = `pkg-config --cflags glfw3` -Iinclude
+CPPFLAGS = `pkg-config --cflags glfw3` -std=c++11 -Iinclude
 
 # Any other platform specific libraries here...
 ifneq (, $(findstring MINGW, $(PLATFORM)))
