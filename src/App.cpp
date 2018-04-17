@@ -30,11 +30,6 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->TextureWalls = new Texture("res/crate.png");
     this->TexturesOn = true;
 
-    // setupView(programID1);
-    // setProjection(programID1);
-    // TextureGround->Use();
-    // TextureWalls->Use();
-
     this->SetShaders();
 }
 
@@ -85,7 +80,10 @@ void App::render()
         setupView(programID2);
         setProjection(programID2);
         TheMaze->renderPlayer(programID2);
-        TheMaze->renderGoal(programID2);
+        TextureWalls->DontUse();
+        setupView(programID3);
+        setProjection(programID3);
+        TheMaze->renderGoal(programID3);
     }
     else 
     {
@@ -128,7 +126,7 @@ void App::key_callback(GLFWwindow* window, int key, int scancode, int action, in
     {
         switch(key) 
         {
-            case GLFW_KEY_ESCAPE: // escape key pressed
+            case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(window, GL_TRUE);
                 break;
             case '1':
@@ -175,14 +173,9 @@ void App::toggleTextures()
 
 void App::setupView(int progId) 
 {
-    // First load the viewing matrix from the current camera
     glm::mat4 viewMatrix;
     viewMatrix = Camera->getViewMtx();
-    // Load it to the shader program
-    int viewHandle = glGetUniformLocation(progId, "view");
-    if (viewHandle == -1) {
-        std::cout << "Uniform: view is not an active uniform label\n";
-    }
+    int viewHandle = getUniformId(progId, "view");
     glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
 }
 
@@ -191,11 +184,24 @@ void App::setProjection(int progId)
     float fov = (float) M_PI / 2.f;
     glm::mat4 projection;
     projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
-
-    // Load it to the shader program
-    int projHandle = glGetUniformLocation(progId, "projection");
-    if (projHandle == -1) {
-        std::cout << "Uniform: projection_matrix is not an active uniform label\n";
-    }
+    int projHandle = getUniformId(progId, "projection");
     glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
 }    
+
+void App::setLight1(int progId)
+{
+    float fov = (float) M_PI / 2.f;
+    glm::mat4 projection;
+    projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
+    int projHandle = getUniformId(progId, "projection");
+    glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
+}
+
+int App::getUniformId(int progId, std::string uniformName)
+{
+    int handle = glGetUniformLocation(progId, uniformName.c_str());
+    if (handle == -1) {
+        std::cout << "Uniform: " << uniformName << "is not an active uniform label\n";
+    }
+    return handle;
+}

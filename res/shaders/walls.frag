@@ -9,7 +9,7 @@ out vec4 fragColour;
 void main(void)
 {
     // Try changing this colour...
-    vec4 colour = vec4(0.4f, 0.4f, 0.4f, 0.5);
+    vec4 colour = vec4(0.8f, 0.8f, 0.8f, 0.5);
 
     // Modulate (multiply) a preset colour with the texture colour
     // at this location.
