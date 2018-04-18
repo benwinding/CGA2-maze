@@ -49,7 +49,7 @@ void Player::renderPlayer(int shaderID)
     this->cubeMesh->Translate(x, 2, z);
     this->cubeMesh->RotateY(-pan);
     this->cubeMesh->RotateZ(-(tilt-90));
-    this->cubeMesh->Scale(1, 0.1, 0.1);
+    this->cubeMesh->Scale(0.7, 0.1, 0.6);
     this->cubeMesh->Translate(1, 0, 0);
     this->cubeMesh->Draw();
 

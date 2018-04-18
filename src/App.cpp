@@ -71,7 +71,7 @@ void App::render()
     
     if(this->TexturesOn)
     {
-        // setLightLocation(textureShader);
+        setLightLocation(textureShader);
         setViewMtx(textureShader);
         setProjection(textureShader);
         TextureGround->Use();
