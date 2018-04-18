@@ -71,13 +71,14 @@ void App::render()
     
     if(this->TexturesOn)
     {
-        setupView(textureShader);
+        // setLightLocation(textureShader);
+        setViewMtx(textureShader);
         setProjection(textureShader);
         TextureGround->Use();
         TheMaze->renderMazeBoundaries(textureShader);
         TextureWalls->Use();
         TheMaze->renderWalls(textureShader);        
-        setupView(plainShader);
+        setViewMtx(plainShader);
         setProjection(plainShader);
         ThePlayer->renderPlayer(plainShader);
         TheMaze->renderGoal(plainShader);
@@ -86,11 +87,11 @@ void App::render()
     {
         TextureGround->DontUse();
         TextureWalls->DontUse();
-        setupView(plainShader);
+        setViewMtx(plainShader);
         setProjection(plainShader);
         TheMaze->renderMazeBoundaries(plainShader);
         TheMaze->renderWalls(plainShader);        
-        setupView(plainShader);
+        setViewMtx(plainShader);
         setProjection(plainShader);
         ThePlayer->renderPlayer(plainShader);
         TheMaze->renderGoal(plainShader);
@@ -168,7 +169,7 @@ void App::toggleTextures()
     std::cout << "Textures Toggled, value: " << this->TexturesOn << std::endl;
 }
 
-void App::setupView(int progId) 
+void App::setViewMtx(int progId) 
 {
     glm::mat4 viewMatrix;
     viewMatrix = Camera->getViewMtx();
@@ -185,20 +186,17 @@ void App::setProjection(int progId)
     glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
 }    
 
-void App::setLight1(int progId)
+void App::setLightLocation(int progId)
 {
-    float fov = (float) M_PI / 2.f;
-    glm::mat4 projection;
-    projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
-    int projHandle = getUniformId(progId, "projection");
-    glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
+    int projHandle = getUniformId(progId, "lightPos");
+    glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(glm::vec3(0,5,0)) );
 }
 
 int App::getUniformId(int progId, std::string uniformName)
 {
     int handle = glGetUniformLocation(progId, uniformName.c_str());
     if (handle == -1) {
-        std::cout << "Uniform: " << uniformName << "is not an active uniform label\n";
+        std::cout << "Uniform: '" << uniformName << "' is not an active uniform label\n";
     }
     return handle;
 }

@@ -12,10 +12,13 @@ uniform mat4 model;
 uniform vec2 scale;
 
 out vec2 st;
+out vec3 Normal;
+out vec3 FragPos;
 
 void main(void)
 {
-	st = a_tex_coord * scale;
-
 	gl_Position = projection * view * model * vec4(a_vertex, 1.0);
+  st = a_tex_coord * scale;
+  Normal = a_normal;
+  FragPos = vec3(model * vec4(a_vertex, 1.0));
 }

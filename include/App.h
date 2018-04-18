@@ -40,8 +40,8 @@ private:
 
     int getUniformId(int progId, std::string uniformName);
     void setProjection(int progId);
-    void setupView(int progId);
-    void setLight1(int progId);
+    void setViewMtx(int progId);
+    void setLightLocation(int progId);
 
 public:
     App(int winX, int winY, int mazeSize, int* mazeConfig);
