@@ -10,12 +10,11 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "App.h"
-#include "Shader.hpp"
+#include "Shader.h"
 
 App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 {
-    this->winX = winX;
-    this->winY = winY;
+    this->SetWindowSize(winX, winY);
     
     this->cubeMesh = new CubeMesh();
     this->ThePlayer = new Player(this->cubeMesh, mazeSize);
@@ -41,25 +40,16 @@ App::~App()
     delete this->ThePlayer;
     delete this->ObjCam;
     delete this->PlayerCam;
-}
-
-int App::CompileShader(std::string vertPath, std::string fragPath)
-{
-    int shaderId = LoadShaders(vertPath, fragPath);
-    if(shaderId == 0)
-    {
-        std::cout << "Failed to compile: " << vertPath << " and " << fragPath << std::endl; 
-    }
-    return shaderId;
+    delete this->textureShader;
+    delete this->plainShader;
 }
 
 void App::SetShaders()
 {
     std::string prefix = "res/shaders/";
     // Set up the shaders we are to use. 0 indicates error.
-    this->textureShader = CompileShader(prefix + "walls.vert", prefix + "walls.frag");
-    this->plainShader = CompileShader(prefix + "plain.vert", prefix + "plain.frag");
-    glUseProgram(this->textureShader);
+    this->plainShader = new Shader(prefix + "plain.vert", prefix + "plain.frag");
+    this->textureShader = new Shader(prefix + "walls.vert", prefix + "walls.frag");
 }
 
 void App::render() 
@@ -68,33 +58,39 @@ void App::render()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     Camera->update(*ThePlayer);
-    
+
     if(this->TexturesOn)
     {
-        setLightLocation(textureShader);
-        setViewMtx(textureShader);
-        setProjection(textureShader);
+        textureShader->use();
+        textureShader->setMat4("projection", this->projection);
+        textureShader->setMat4("view", Camera->getViewMtx());
+        textureShader->setVec3("lightPos", 1.f, 2.f, 0.f);
+
         TextureGround->Use();
-        TheMaze->renderMazeBoundaries(textureShader);
+        TheMaze->renderMazeBoundaries(textureShader->GetId());
         TextureWalls->Use();
-        TheMaze->renderWalls(textureShader);        
-        setViewMtx(plainShader);
-        setProjection(plainShader);
-        ThePlayer->renderPlayer(plainShader);
-        TheMaze->renderGoal(plainShader);
+        TheMaze->renderWalls(textureShader->GetId());
+
+        TextureGround->DontUse();
+        TextureWalls->DontUse();
+        plainShader->use();
+        plainShader->setMat4("projection", this->projection);
+        plainShader->setMat4("view", Camera->getViewMtx());
+        ThePlayer->renderPlayer(plainShader->GetId());
+        TheMaze->renderGoal(plainShader->GetId());
     }
     else 
     {
         TextureGround->DontUse();
         TextureWalls->DontUse();
-        setViewMtx(plainShader);
-        setProjection(plainShader);
-        TheMaze->renderMazeBoundaries(plainShader);
-        TheMaze->renderWalls(plainShader);        
-        setViewMtx(plainShader);
-        setProjection(plainShader);
-        ThePlayer->renderPlayer(plainShader);
-        TheMaze->renderGoal(plainShader);
+        plainShader->use();
+        plainShader->setMat4("projection", this->projection);
+        plainShader->setMat4("view", Camera->getViewMtx());
+        
+        TheMaze->renderMazeBoundaries(plainShader->GetId());
+        TheMaze->renderWalls(plainShader->GetId());        
+        ThePlayer->renderPlayer(plainShader->GetId());
+        TheMaze->renderGoal(plainShader->GetId());
     }
 }
 
@@ -169,40 +165,15 @@ void App::toggleTextures()
     std::cout << "Textures Toggled, value: " << this->TexturesOn << std::endl;
 }
 
-void App::setViewMtx(int progId) 
-{
-    glm::mat4 viewMatrix;
-    viewMatrix = Camera->getViewMtx();
-    int viewHandle = getUniformId(progId, "view");
-    glUniformMatrix4fv( viewHandle, 1, false, glm::value_ptr(viewMatrix) );
-}
-
-void App::setProjection(int progId)
-{
-    float fov = (float) M_PI / 2.f;
-    glm::mat4 projection;
-    projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
-    int projHandle = getUniformId(progId, "projection");
-    glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(projection) );
-}    
-
-void App::setLightLocation(int progId)
-{
-    int projHandle = getUniformId(progId, "lightPos");
-    glUniformMatrix4fv( projHandle, 1, false, glm::value_ptr(glm::vec3(0,5,0)) );
-}
-
-int App::getUniformId(int progId, std::string uniformName)
-{
-    int handle = glGetUniformLocation(progId, uniformName.c_str());
-    if (handle == -1) {
-        std::cout << "Uniform: '" << uniformName << "' is not an active uniform label\n";
-    }
-    return handle;
-}
-
 int App::SetWindowSize(int x, int y)
 {
     this->winX = x;
     this->winY = y;
+    this->updateProjection();
 }
+
+void App::updateProjection()
+{
+    float fov = (float) M_PI / 2.f;
+    this->projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
+}    

@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "Shader.h"
 #include "Maze.h"
 #include "Player.h"
 #include "Viewer.h"
@@ -29,8 +30,10 @@ private:
     Texture *TextureGround;
     Texture *TextureWalls;
 
-    unsigned int textureShader;
-    unsigned int plainShader;
+    Shader *textureShader;
+    Shader *plainShader;
+
+    glm::mat4 projection;
 
 
     int CompileShader(std::string vertPath, std::string fragPath);  
@@ -42,6 +45,7 @@ private:
     void setProjection(int progId);
     void setViewMtx(int progId);
     void setLightLocation(int progId);
+    void updateProjection();
 
 public:
     App(int winX, int winY, int mazeSize, int* mazeConfig);

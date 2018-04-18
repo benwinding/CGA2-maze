@@ -6,9 +6,9 @@
 
 #include <GL/glew.h>
 
-#include "Shader.hpp"
+#include "Shader.h"
 
-int CompileShader(const char *ShaderPath, const GLuint ShaderID)
+int Shader::CompileShader(const char *ShaderPath, const GLuint ShaderID)
 {
 	// Read shader code from file
 	std::string ShaderCode;
@@ -49,8 +49,8 @@ int CompileShader(const char *ShaderPath, const GLuint ShaderID)
     return 1;
 }
 
-GLuint LoadShaders(std::string vertex_file_path,
-                   std::string fragment_file_path )
+GLuint Shader::LoadShaders(std::string vertex_file_path,
+                   std::string fragment_file_path)
 {
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -86,4 +86,43 @@ GLuint LoadShaders(std::string vertex_file_path,
 	return ProgramID;
 }
 
+Shader::Shader(std::string vertex_file_path,
+                   std::string fragment_file_path)
+{
+	this->shaderId = this->LoadShaders(vertex_file_path, fragment_file_path);
+	this->use();
+}
 
+void Shader::use()
+{
+    glUseProgram(this->shaderId);
+}
+
+void Shader::setVec3(std::string uniformName, const glm::vec3 &vec)
+{
+	glUniform3fv(this->getHandle(uniformName), 1, &vec[0]); 
+}
+
+void Shader::setVec3(std::string uniformName, float x, float y, float z)
+{
+	glUniform3f(this->getHandle(uniformName), x, y, z);
+}
+
+void Shader::setMat4(std::string uniformName, const glm::mat4 &mat)
+{
+	glUniformMatrix4fv(this->getHandle(uniformName), 1, GL_FALSE, &mat[0][0]);
+}
+
+int Shader::getHandle(std::string uniformName)
+{
+    int handle = glGetUniformLocation(this->shaderId, uniformName.c_str());
+    if (handle == -1) {
+        std::cout << "Uniform: '" << uniformName.c_str() << "' is not an active uniform label\n";
+    }
+    return handle;
+}
+
+int Shader::GetId()
+{
+	return this->shaderId;
+}

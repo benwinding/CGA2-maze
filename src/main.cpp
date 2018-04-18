@@ -7,12 +7,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-
 #include "App.h"
-#include "Shader.hpp"
 
 int winX = 700;
 int winY = 500;
