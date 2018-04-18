@@ -202,3 +202,9 @@ int App::getUniformId(int progId, std::string uniformName)
     }
     return handle;
 }
+
+int App::SetWindowSize(int x, int y)
+{
+    this->winX = x;
+    this->winY = y;
+}

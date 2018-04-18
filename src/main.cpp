@@ -23,8 +23,7 @@ bool helpActive = true;
 // Called when the window is resized.
 void reshape_callback(GLFWwindow *window, int x, int y) 
 {
-    winX = x;
-    winY = y;
+    TheApp->SetWindowSize(x, y);
     glViewport( 0, 0, x, y );
 }
 

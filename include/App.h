@@ -54,6 +54,7 @@ public:
 
     void playerMove(int key);
     void cameraChange(int camera);
+    int SetWindowSize(int x, int y);
 };
 
 #endif
