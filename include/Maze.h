@@ -30,7 +30,6 @@ public:
     void renderMazeBoundaries(int shaderID);
     void renderWalls(int shaderID);
     void renderGoal(int shaderID);
-    void renderPlayer(int shaderID);
 
     int GetMazeSize();
 };

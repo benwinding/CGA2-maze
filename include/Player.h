@@ -13,10 +13,12 @@ private:
     float pan, tilt;
 
     glm::ivec2 location;
-
+    int mazeSize;
 public:
-    Player(CubeMesh *cubeMesh);
+    Player(CubeMesh *cubeMesh, int mazeSize);
     void Reset();
+
+    void renderPlayer(int shaderID);
 
     glm::ivec2 GetLocation();
     float GetPan();

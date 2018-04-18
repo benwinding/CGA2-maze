@@ -119,46 +119,6 @@ void Maze::renderGoal(int shaderID)
 	glFlush();
 }
 
-void Log(std::string varName, float varVal)
-{
-    std::cout << varName << "=" << varVal << std::endl;
-}
-
-void Maze::renderPlayer(int shaderID)
-{
-    glUseProgram(shaderID);
-
-    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
-
-    glm::ivec2 location = this->thePlayer->GetLocation();
-    float i = location[0];
-    float j = location[1];
-    float x = i*2 - mazeSize + 1;
-    float z = j*2 - mazeSize + 1;
-
-    float pan = this->thePlayer->GetPan();
-    float tilt = this->thePlayer->GetTilt();
-
-    // Render Player Vertical Section
-    this->cubeMesh->Reset(shaderID);
-    this->cubeMesh->Translate(x, 0, z);
-    this->cubeMesh->RotateY(-pan);
-    this->cubeMesh->Scale(0.1, 4, 0.1);
-    this->cubeMesh->Draw();
-
-    // Render Player Direction Stick
-    this->cubeMesh->Reset(shaderID);
-    this->cubeMesh->Translate(x, 2, z);
-    this->cubeMesh->RotateY(-pan);
-    this->cubeMesh->RotateZ(-(tilt-90));
-    this->cubeMesh->Scale(1, 0.1, 0.1);
-    this->cubeMesh->Translate(1, 0, 0);
-    this->cubeMesh->Draw();
-
-    glBindVertexArray(0);
-    glFlush();
-}
-
 int Maze::getLocationValue(glm::ivec2 pos)
 {
     int i = pos.x;

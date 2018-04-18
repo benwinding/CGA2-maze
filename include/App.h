@@ -13,6 +13,8 @@
 // Repsonsible Composing the program and 
 class App {
 private:
+    int winX, winY;
+
     CubeMesh *cubeMesh;
 
     Maze *TheMaze;
@@ -23,18 +25,16 @@ private:
     ObjectViewer *ObjCam;
     PlayerViewer *PlayerCam;
 
+    bool TexturesOn;
     Texture *TextureGround;
     Texture *TextureWalls;
 
-    int winX, winY;
+    unsigned int textureShader;
+    unsigned int plainShader;
 
-    int shaderID1, shaderID2;
 
-    bool TexturesOn;
-    unsigned int programID1, programID2, programID3;
-
-    void MoveStraight(float angle);
     int CompileShader(std::string vertPath, std::string fragPath);  
+    void MoveStraight(float angle);
     void SetShaders();
     void toggleTextures();
 
@@ -52,8 +52,6 @@ public:
     void key_callback(GLFWwindow* window,
                   int key, int scancode, int action, int mods);
 
-    void playerMove(int key);
-    void cameraChange(int camera);
     int SetWindowSize(int x, int y);
 };
 

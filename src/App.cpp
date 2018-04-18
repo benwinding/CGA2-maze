@@ -16,8 +16,9 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 {
     this->winX = winX;
     this->winY = winY;
+    
     this->cubeMesh = new CubeMesh();
-    this->ThePlayer = new Player(this->cubeMesh);
+    this->ThePlayer = new Player(this->cubeMesh, mazeSize);
     this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
     
     this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
@@ -56,10 +57,9 @@ void App::SetShaders()
 {
     std::string prefix = "res/shaders/";
     // Set up the shaders we are to use. 0 indicates error.
-    this->programID1 = CompileShader(prefix + "walls.vert", prefix + "walls.frag");
-    this->programID2 = CompileShader(prefix + "walls.vert", prefix + "walls.frag");
-    this->programID3 = CompileShader(prefix + "plain.vert", prefix + "plain.frag");
-    glUseProgram(this->programID1);
+    this->textureShader = CompileShader(prefix + "walls.vert", prefix + "walls.frag");
+    this->plainShader = CompileShader(prefix + "plain.vert", prefix + "plain.frag");
+    glUseProgram(this->textureShader);
 }
 
 void App::render() 
@@ -71,29 +71,29 @@ void App::render()
     
     if(this->TexturesOn)
     {
-        setupView(programID1);
-        setProjection(programID1);
+        setupView(textureShader);
+        setProjection(textureShader);
         TextureGround->Use();
-        TheMaze->renderMazeBoundaries(programID1);
+        TheMaze->renderMazeBoundaries(textureShader);
         TextureWalls->Use();
-        TheMaze->renderWalls(programID1);        
-        setupView(programID2);
-        setProjection(programID2);
-        TheMaze->renderPlayer(programID3);
-        TheMaze->renderGoal(programID3);
+        TheMaze->renderWalls(textureShader);        
+        setupView(plainShader);
+        setProjection(plainShader);
+        ThePlayer->renderPlayer(plainShader);
+        TheMaze->renderGoal(plainShader);
     }
     else 
     {
         TextureGround->DontUse();
         TextureWalls->DontUse();
-        setupView(programID3);
-        setProjection(programID3);
-        TheMaze->renderMazeBoundaries(programID3);
-        TheMaze->renderWalls(programID3);        
-        setupView(programID3);
-        setProjection(programID3);
-        TheMaze->renderPlayer(programID3);
-        TheMaze->renderGoal(programID3);
+        setupView(plainShader);
+        setProjection(plainShader);
+        TheMaze->renderMazeBoundaries(plainShader);
+        TheMaze->renderWalls(plainShader);        
+        setupView(plainShader);
+        setProjection(plainShader);
+        ThePlayer->renderPlayer(plainShader);
+        TheMaze->renderGoal(plainShader);
     }
 }
 
