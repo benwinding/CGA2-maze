@@ -79,10 +79,7 @@ void App::render()
         TheMaze->renderWalls(programID1);        
         setupView(programID2);
         setProjection(programID2);
-        TheMaze->renderPlayer(programID2);
-        TextureWalls->DontUse();
-        setupView(programID3);
-        setProjection(programID3);
+        TheMaze->renderPlayer(programID3);
         TheMaze->renderGoal(programID3);
     }
     else 
