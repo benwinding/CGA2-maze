@@ -62,14 +62,11 @@ void PlayerViewer::update(Player &thePlayer)
     float pan = DEG2RAD(thePlayer.GetPan());
     float tilt = DEG2RAD(thePlayer.GetTilt());
 
-    float x = location.x;
-    float z = location.z;
-
     float camX = sin(tilt)*cos(pan);
     float camY = cos(tilt);
     float camZ = sin(tilt)*sin(pan);
 
-    glm::vec3 at(x, 1.0f, z);
+    glm::vec3 at(location.x, 1.0f, location.z);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
     glm::vec3 cameraFocus(camX, camY, camZ);
 
