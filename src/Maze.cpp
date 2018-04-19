@@ -102,7 +102,7 @@ void Maze::renderGoal(int shaderID)
                 float z = j*2 - mazeSize + 1;
                 this->cubeMesh->Reset(shaderID);
                 this->cubeMesh->Translate(x, 1, z);
-                this->cubeMesh->Scale(0.2, 0.2, 0.2);
+                this->cubeMesh->Scale(0.2, 10, 0.2);
                 this->cubeMesh->Draw();
             }
     	}
