@@ -1,8 +1,9 @@
 #ifndef __APP_H_
 #define __APP_H_
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #include "Shader.h"
 #include "Maze.h"
@@ -22,7 +23,6 @@ private:
     Player *ThePlayer;
 
     Viewer *Camera;
-
     ObjectViewer *ObjCam;
     PlayerViewer *PlayerCam;
 
@@ -35,17 +35,15 @@ private:
 
     glm::mat4 projection;
 
-
     int CompileShader(std::string vertPath, std::string fragPath);  
     void MoveStraight(float angle);
     void SetShaders();
     void toggleTextures();
 
-    int getUniformId(int progId, std::string uniformName);
-    void setProjection(int progId);
-    void setViewMtx(int progId);
-    void setLightLocation(int progId);
     void updateProjection();
+
+    void renderPlain();
+    void renderWithTextures();
 
 public:
     App(int winX, int winY, int mazeSize, int* mazeConfig);
@@ -53,8 +51,7 @@ public:
 
     void render();
 
-    void key_callback(GLFWwindow* window,
-                  int key, int scancode, int action, int mods);
+    void key_callback(int key, int action);
 
     int SetWindowSize(int x, int y);
 };

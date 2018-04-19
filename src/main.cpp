@@ -133,7 +133,10 @@ void PrintHelp()
 void key_callback(GLFWwindow* window,
     int key, int scancode, int action, int mods)
 {
-    TheApp->key_callback(window, key, scancode, action, mods);
+    if (key == GLFW_KEY_ESCAPE)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+
+    TheApp->key_callback(key, action);
 }   
 
 int main (int argc, char **argv)

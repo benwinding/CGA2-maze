@@ -61,38 +61,44 @@ void App::render()
     Camera->update(*ThePlayer);
 
     if(this->TexturesOn)
-    {
-        textureShader->use();
-        textureShader->setMat4("projection", this->projection);
-        textureShader->setMat4("view", Camera->getViewMtx());
-        textureShader->setVec3("lightPos", 1.f, 2.f, 0.f);
-
-        TextureGround->Use();
-        TheMaze->renderMazeBoundaries(textureShader->GetId());
-        TextureWalls->Use();
-        TheMaze->renderWalls(textureShader->GetId());
-
-        TextureGround->DontUse();
-        TextureWalls->DontUse();
-        plainShader->use();
-        plainShader->setMat4("projection", this->projection);
-        plainShader->setMat4("view", Camera->getViewMtx());
-        ThePlayer->renderPlayer(plainShader->GetId());
-        TheMaze->renderGoal(plainShader->GetId());
-    }
+        this->renderWithTextures();
     else 
-    {
-        TextureGround->DontUse();
-        TextureWalls->DontUse();
-        plainShader->use();
-        plainShader->setMat4("projection", this->projection);
-        plainShader->setMat4("view", Camera->getViewMtx());
-        
-        TheMaze->renderMazeBoundaries(plainShader->GetId());
-        TheMaze->renderWalls(plainShader->GetId());        
-        ThePlayer->renderPlayer(plainShader->GetId());
-        TheMaze->renderGoal(plainShader->GetId());
-    }
+        this->renderPlain();
+}
+
+void App::renderPlain()
+{
+    TextureGround->DontUse();
+    TextureWalls->DontUse();
+    plainShader->use();
+    plainShader->setMat4("projection", this->projection);
+    plainShader->setMat4("view", Camera->getViewMtx());
+    
+    TheMaze->renderMazeBoundaries(plainShader->GetId());
+    TheMaze->renderWalls(plainShader->GetId());        
+    ThePlayer->renderPlayer(plainShader->GetId());
+    TheMaze->renderGoal(plainShader->GetId());
+}
+
+void App::renderWithTextures()
+{
+    textureShader->use();
+    textureShader->setMat4("projection", this->projection);
+    textureShader->setMat4("view", Camera->getViewMtx());
+    textureShader->setVec3("lightPos", 1.f, 2.f, 0.f);
+
+    TextureGround->Use();
+    TheMaze->renderMazeBoundaries(textureShader->GetId());
+    TextureWalls->Use();
+    TheMaze->renderWalls(textureShader->GetId());
+
+    TextureGround->DontUse();
+    TextureWalls->DontUse();
+    plainShader->use();
+    plainShader->setMat4("projection", this->projection);
+    plainShader->setMat4("view", Camera->getViewMtx());
+    ThePlayer->renderPlayer(plainShader->GetId());
+    TheMaze->renderGoal(plainShader->GetId());
 }
 
 void App::MoveStraight(float moveAngle)
@@ -115,15 +121,12 @@ void App::MoveStraight(float moveAngle)
         ThePlayer->SetLocation(newLocation);
 }
 
-void App::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void App::key_callback(int key, int action)
 {
     if (action == GLFW_PRESS) 
     {
         switch(key) 
         {
-            case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(window, GL_TRUE);
-                break;
             case '1':
                 Camera = PlayerCam;
                 break;
