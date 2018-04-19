@@ -85,7 +85,7 @@ void App::renderWithTextures()
     textureShader->use();
     textureShader->setMat4("projection", this->projection);
     textureShader->setMat4("view", Camera->getViewMtx());
-    textureShader->setVec3("lightPos", 1.f, 2.f, 0.f);
+    textureShader->setVec3("lightPos", ThePlayer->GetLocation3());
 
     TextureGround->Use();
     TheMaze->renderMazeBoundaries(textureShader->GetId());
@@ -112,7 +112,7 @@ void App::MoveStraight(float moveAngle)
         glm::ivec2(0,1),
     };
     glm::ivec2 moveVector = vecArray[index];
-    glm::ivec2 newLocation = ThePlayer->GetLocation() + moveVector;
+    glm::ivec2 newLocation = ThePlayer->GetGridLocation() + moveVector;
     if(TheMaze->IsLocationWall(newLocation))
         return;
     if(TheMaze->IsLocationGoal(newLocation))

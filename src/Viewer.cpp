@@ -58,7 +58,7 @@ PlayerViewer::PlayerViewer(glm::vec3 eye, int mazeSize)
 
 void PlayerViewer::update(Player &thePlayer)
 {
-    glm::ivec2 location = thePlayer.GetLocation();
+    glm::ivec2 location = thePlayer.GetGridLocation();
     float pan = DEG2RAD(thePlayer.GetPan());
     float tilt = DEG2RAD(thePlayer.GetTilt());
 

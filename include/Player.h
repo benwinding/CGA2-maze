@@ -20,7 +20,8 @@ public:
 
     void renderPlayer(int shaderID);
 
-    glm::ivec2 GetLocation();
+    glm::ivec3 GetLocation3();
+    glm::ivec2 GetGridLocation();
     float GetPan();
     float GetTilt();
 

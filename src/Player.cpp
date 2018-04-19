@@ -26,25 +26,20 @@ void Player::renderPlayer(int shaderID)
 {
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
-    glm::ivec2 location = this->GetLocation();
-    float i = location[0];
-    float j = location[1];
-    float x = i*2 - mazeSize + 1;
-    float z = j*2 - mazeSize + 1;
-
+    glm::ivec3 location3 = this->GetLocation3();
     float pan = this->GetPan();
     float tilt = this->GetTilt();
 
     // Render Player Vertical Section
     this->cubeMesh->Reset(shaderID);
-    this->cubeMesh->Translate(x, 0, z);
+    this->cubeMesh->Translate(location3.x, 0, location3.z);
     this->cubeMesh->RotateY(-pan);
     this->cubeMesh->Scale(0.1, 4, 0.1);
     this->cubeMesh->Draw();
 
     // Render Player Direction Stick
     this->cubeMesh->Reset(shaderID);
-    this->cubeMesh->Translate(x, 2, z);
+    this->cubeMesh->Translate(location3.x, 2, location3.z);
     this->cubeMesh->RotateY(-pan);
     this->cubeMesh->RotateZ(-(tilt-90));
     this->cubeMesh->Scale(0.7, 0.1, 0.6);
@@ -98,18 +93,27 @@ void Player::TiltDown()
 }
 
 // Getters
-glm::ivec2 Player::GetLocation()
+glm::ivec3 Player::GetLocation3()
 {
-  return this->location;
+    float i = this->location[0];
+    float j = this->location[1];
+    float x = i*2 - mazeSize + 1;
+    float z = j*2 - mazeSize + 1;
+    return glm::vec3(x, 1, z);
+}
+
+glm::ivec2 Player::GetGridLocation()
+{
+    return this->location;
 }
 
 float Player::GetPan()
 {
-  return this->pan;
+    return this->pan;
 }
 
 float Player::GetTilt()
 {
-  return this->tilt;
+    return this->tilt;
 }
 
