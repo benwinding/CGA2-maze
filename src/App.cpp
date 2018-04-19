@@ -66,22 +66,6 @@ void App::render()
         this->renderPlain();
 }
 
-void App::renderPlain()
-{
-    int currentId;
-    currentId = wallsShader->GetId();
-    wallsShader->use();
-    wallsShader->setMat4("projection", this->projection);
-    wallsShader->setMat4("view", Camera->getViewMtx());
-    wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
-
-    NoTexture->Use();
-    TheMaze->renderMazeBoundaries(currentId);
-    TheMaze->renderWalls(currentId);
-    ThePlayer->renderPlayer(currentId);
-    TheMaze->renderGoal(currentId);
-}
-
 void App::renderWithTextures()
 {
     int currentId;
@@ -97,6 +81,22 @@ void App::renderWithTextures()
     TheMaze->renderWalls(currentId);
 
     NoTexture->Use();
+    ThePlayer->renderPlayer(currentId);
+    TheMaze->renderGoal(currentId);
+}
+
+void App::renderPlain()
+{
+    int currentId;
+    currentId = wallsShader->GetId();
+    wallsShader->use();
+    wallsShader->setMat4("projection", this->projection);
+    wallsShader->setMat4("view", Camera->getViewMtx());
+    wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
+
+    NoTexture->Use();
+    TheMaze->renderMazeBoundaries(currentId);
+    TheMaze->renderWalls(currentId);
     ThePlayer->renderPlayer(currentId);
     TheMaze->renderGoal(currentId);
 }
