@@ -76,12 +76,16 @@ void App::renderWithTextures()
     wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
 
     TextureGround->Use();
+    wallsShader->setVec3("objectColor", 0.9f, 0.2f, 0.9f);
     TheMaze->renderMazeBoundaries(currentId);
     TextureWalls->Use();
+    wallsShader->setVec3("objectColor", 0.2f, 0.2f, 0.9f);
     TheMaze->renderWalls(currentId);
 
     NoTexture->Use();
+    wallsShader->setVec3("objectColor", 0.1f, 0.8f, 0.9f);
     ThePlayer->renderPlayer(currentId);
+    wallsShader->setVec3("objectColor", 1.f, 0.1f, 0.1f);
     TheMaze->renderGoal(currentId);
 }
 
@@ -95,9 +99,14 @@ void App::renderPlain()
     wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
 
     NoTexture->Use();
+    wallsShader->setVec3("objectColor", 0.9f, 0.2f, 0.9f);
     TheMaze->renderMazeBoundaries(currentId);
+    wallsShader->setVec3("objectColor", 0.2f, 0.2f, 0.9f);
     TheMaze->renderWalls(currentId);
+
+    wallsShader->setVec3("objectColor", 0.1f, 0.8f, 0.9f);
     ThePlayer->renderPlayer(currentId);
+    wallsShader->setVec3("objectColor", 1.f, 0.1f, 0.1f);
     TheMaze->renderGoal(currentId);
 }
 
