@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <math.h>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -39,7 +40,6 @@ void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
 */  
 void Maze::renderMazeBoundaries(int shaderID)
 {
-    glUseProgram(shaderID);
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     // First the floor
@@ -67,7 +67,6 @@ void Maze::renderMazeBoundaries(int shaderID)
 */  
 void Maze::renderWalls(int shaderID)
 {
-    glUseProgram(shaderID);
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     // Render Current Maze Layout
@@ -93,7 +92,6 @@ void Maze::renderWalls(int shaderID)
 
 void Maze::renderGoal(int shaderID)
 {
-    glUseProgram(shaderID);
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     // Render Current Maze Layout

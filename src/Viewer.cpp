@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <math.h>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #include "Viewer.h"
 #include "glm/gtc/matrix_transform.hpp"

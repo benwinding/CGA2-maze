@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include "glm/gtx/string_cast.hpp"

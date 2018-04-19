@@ -24,8 +24,6 @@ void Player::Reset()
 
 void Player::renderPlayer(int shaderID)
 {
-    glUseProgram(shaderID);
-
     glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
 
     glm::ivec2 location = this->GetLocation();

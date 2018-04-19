@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <iostream>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <GL/glew.h>
 
 #include "glm/glm.hpp"
