@@ -29,6 +29,8 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 
     this->TextureGround = new Texture("res/star_wars_trench.png");
     this->TextureWalls = new Texture("res/crate.png");
+    this->NoTexture = new Texture("res/white.png");
+
     this->TexturesOn = true;
 
     this->SetShaders();
@@ -41,16 +43,14 @@ App::~App()
     delete this->ThePlayer;
     delete this->ObjCam;
     delete this->PlayerCam;
-    delete this->textureShader;
-    delete this->plainShader;
+    delete this->wallsShader;
 }
 
 void App::SetShaders()
 {
     std::string prefix = "res/shaders/";
     // Set up the shaders we are to use. 0 indicates error.
-    this->plainShader = new Shader(prefix + "plain.vert", prefix + "plain.frag");
-    this->textureShader = new Shader(prefix + "walls.vert", prefix + "walls.frag");
+    this->wallsShader = new Shader(prefix + "walls.vert", prefix + "walls.frag");
 }
 
 void App::render() 
@@ -68,37 +68,37 @@ void App::render()
 
 void App::renderPlain()
 {
-    TextureGround->DontUse();
-    TextureWalls->DontUse();
-    plainShader->use();
-    plainShader->setMat4("projection", this->projection);
-    plainShader->setMat4("view", Camera->getViewMtx());
-    
-    TheMaze->renderMazeBoundaries(plainShader->GetId());
-    TheMaze->renderWalls(plainShader->GetId());        
-    ThePlayer->renderPlayer(plainShader->GetId());
-    TheMaze->renderGoal(plainShader->GetId());
+    int currentId;
+    currentId = wallsShader->GetId();
+    wallsShader->use();
+    wallsShader->setMat4("projection", this->projection);
+    wallsShader->setMat4("view", Camera->getViewMtx());
+    wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
+
+    NoTexture->Use();
+    TheMaze->renderMazeBoundaries(currentId);
+    TheMaze->renderWalls(currentId);
+    ThePlayer->renderPlayer(currentId);
+    TheMaze->renderGoal(currentId);
 }
 
 void App::renderWithTextures()
 {
-    textureShader->use();
-    textureShader->setMat4("projection", this->projection);
-    textureShader->setMat4("view", Camera->getViewMtx());
-    textureShader->setVec3("lightPos", ThePlayer->GetLocation3());
+    int currentId;
+    currentId = wallsShader->GetId();
+    wallsShader->use();
+    wallsShader->setMat4("projection", this->projection);
+    wallsShader->setMat4("view", Camera->getViewMtx());
+    wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
 
     TextureGround->Use();
-    TheMaze->renderMazeBoundaries(textureShader->GetId());
+    TheMaze->renderMazeBoundaries(currentId);
     TextureWalls->Use();
-    TheMaze->renderWalls(textureShader->GetId());
+    TheMaze->renderWalls(currentId);
 
-    TextureGround->DontUse();
-    TextureWalls->DontUse();
-    plainShader->use();
-    plainShader->setMat4("projection", this->projection);
-    plainShader->setMat4("view", Camera->getViewMtx());
-    ThePlayer->renderPlayer(plainShader->GetId());
-    TheMaze->renderGoal(plainShader->GetId());
+    NoTexture->Use();
+    ThePlayer->renderPlayer(currentId);
+    TheMaze->renderGoal(currentId);
 }
 
 void App::MoveStraight(float moveAngle)

@@ -29,9 +29,9 @@ private:
     bool TexturesOn;
     Texture *TextureGround;
     Texture *TextureWalls;
+    Texture *NoTexture;
 
-    Shader *textureShader;
-    Shader *plainShader;
+    Shader *wallsShader;
 
     glm::mat4 projection;
 

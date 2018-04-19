@@ -31,6 +31,7 @@ void CubeMesh::Reset(int shaderID)
     this->model = glm::mat4();
     this->shaderID = shaderID;
     this->textureScale = glm::vec2(1.f);
+    glBindVertexArray(this->getCubeVAOHandle());
 }
 
 void CubeMesh::Translate(float tx, float ty, float tz)

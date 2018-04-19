@@ -40,8 +40,6 @@ void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
 */  
 void Maze::renderMazeBoundaries(int shaderID)
 {
-    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
-
     // First the floor
     this->cubeMesh->MakeCube(shaderID, 0, -wallThickness, 0, mazeSize, wallThickness, mazeSize);
     this->cubeMesh->SetTextureScale(mazeSize, mazeSize);
@@ -67,8 +65,6 @@ void Maze::renderMazeBoundaries(int shaderID)
 */  
 void Maze::renderWalls(int shaderID)
 {
-    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
-
     // Render Current Maze Layout
     int sizeI = this->gridRows;
     int sizeJ = this->gridCols;
@@ -92,8 +88,6 @@ void Maze::renderWalls(int shaderID)
 
 void Maze::renderGoal(int shaderID)
 {
-    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
-
     // Render Current Maze Layout
     int sizeI = this->gridRows;
     int sizeJ = this->gridCols;

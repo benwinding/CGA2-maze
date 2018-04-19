@@ -24,8 +24,6 @@ void Player::Reset()
 
 void Player::renderPlayer(int shaderID)
 {
-    glBindVertexArray(this->cubeMesh->getCubeVAOHandle());
-
     glm::ivec3 location3 = this->GetLocation3();
     float pan = this->GetPan();
     float tilt = this->GetTilt();

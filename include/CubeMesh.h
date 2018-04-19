@@ -10,23 +10,23 @@ class CubeMesh
     int scaleUniformHandle;
     glm::vec2 textureScale;
 
+    int getCubeVAOHandle();
+
 public:
     CubeMesh();
 
-	void Reset(int shaderId);
-	void Translate(float tx, float ty, float tz);
-	void Scale(float sx, float sy, float sz);
-	void RotateX(float rx);
-	void RotateY(float ry);
-	void RotateZ(float ry);
+    void Reset(int shaderId);
+    void Translate(float tx, float ty, float tz);
+    void Scale(float sx, float sy, float sz);
+    void RotateX(float rx);
+    void RotateY(float ry);
+    void RotateZ(float ry);
     void SetTextureScale(float s, float t);
     void Draw();
 
-	void MakeCube(int shaderId, 
+    void MakeCube(int shaderId, 
     float tx, float ty, float tz, 
     float sx, float sy, float sz);
-
-    int getCubeVAOHandle();
 };
 
 #endif
