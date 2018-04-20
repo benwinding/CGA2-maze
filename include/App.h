@@ -43,9 +43,6 @@ private:
 
     void updateProjection();
 
-    void renderPlain();
-    void renderWithTextures();
-
 public:
     App(int winX, int winY, int mazeSize, int* mazeConfig);
     ~App();

@@ -61,37 +61,6 @@ void App::render()
 
     Camera->update(*ThePlayer);
 
-    if(this->TexturesOn)
-        this->renderWithTextures();
-    else 
-        this->renderPlain();
-}
-
-void App::renderWithTextures()
-{
-    int currentId;
-    currentId = wallsShader->GetId();
-    wallsShader->use();
-    wallsShader->setMat4("projection", this->projection);
-    wallsShader->setMat4("view", Camera->getViewMtx());
-    wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
-
-    TextureGround->Use();
-    wallsShader->setVec3("objectColor", 0.9f, 0.2f, 0.9f);
-    TheMaze->renderMazeBoundaries(currentId);
-    TextureWalls->Use();
-    wallsShader->setVec3("objectColor", 0.2f, 0.2f, 0.9f);
-    TheMaze->renderWalls(currentId);
-
-    TextureHat->Use();
-    wallsShader->setVec3("objectColor", 0.1f, 0.8f, 0.9f);
-    ThePlayer->renderPlayer(currentId);
-    wallsShader->setVec3("objectColor", 1.f, 0.1f, 0.1f);
-    TheMaze->renderGoal(currentId);
-}
-
-void App::renderPlain()
-{
     int currentId;
     currentId = wallsShader->GetId();
     wallsShader->use();
@@ -100,14 +69,21 @@ void App::renderPlain()
     wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
 
     NoTexture->Use();
-    wallsShader->setVec3("objectColor", 0.9f, 0.2f, 0.9f);
+    if(this->TexturesOn)
+        TextureGround->Use();
+    wallsShader->setRgb("objectColor", 100, 100, 100);
     TheMaze->renderMazeBoundaries(currentId);
-    wallsShader->setVec3("objectColor", 0.2f, 0.2f, 0.9f);
+    if(this->TexturesOn)
+        TextureWalls->Use();
+    wallsShader->setRgb("objectColor", 124, 68, 42);
     TheMaze->renderWalls(currentId);
 
-    wallsShader->setVec3("objectColor", 0.1f, 0.8f, 0.9f);
+    if(this->TexturesOn)
+        TextureHat->Use();
+    wallsShader->setRgb("objectColor", 0, 255, 0);
     ThePlayer->renderPlayer(currentId);
-    wallsShader->setVec3("objectColor", 1.f, 0.1f, 0.1f);
+    NoTexture->Use();
+    wallsShader->setRgb("objectColor", 255, 0, 0);
     TheMaze->renderGoal(currentId);
 }
 
