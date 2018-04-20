@@ -23,7 +23,7 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     
     this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
 
-    this->ObjCam = new ObjectViewer(glm::vec3(0,mazeSize*2,0.5));
+    this->ObjCam = new ObjectViewer(glm::vec3(0,mazeSize*1.4,0.5));
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0), this->TheMaze->GetMazeSize());
     this->Camera = PlayerCam;
 
