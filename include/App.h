@@ -27,7 +27,8 @@ private:
     PlayerViewer *PlayerCam;
 
     bool TexturesOn;
-    Texture *TextureGround;
+    Texture *TextureFloor;
+    Texture *TextureBoundry;
     Texture *TextureWalls;
     Texture *TextureHat;
     Texture *NoTexture;

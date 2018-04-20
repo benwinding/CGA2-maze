@@ -40,18 +40,36 @@ void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
 */  
 void Maze::renderMazeBoundary(int shaderID)
 {
-    // First the floor
-    this->cubeMesh->MakeCube(shaderID, 0, 1.f+wallThickness, mazeSize+wallThickness, mazeSize+2*wallThickness, wallThickness+1, wallThickness);
+    float wallOffset = 1.f+wallThickness;
+    float wallLength = mazeSize+wallThickness;
+    // North Wall
+    this->cubeMesh->MakeCube(shaderID, 
+        0, wallOffset, wallLength, 
+        mazeSize+2*wallThickness, wallThickness+1, wallThickness);
     this->cubeMesh->SetTextureScale(mazeSize, 1.f);
     this->cubeMesh->Draw();
-    this->cubeMesh->MakeCube(shaderID, 0, 1.f+wallThickness, -mazeSize-wallThickness, mazeSize+2*wallThickness, wallThickness+1, wallThickness);
+
+    // South Wall
+    this->cubeMesh->MakeCube(shaderID, 
+        0, wallOffset, -wallLength,
+        mazeSize+2*wallThickness, wallThickness+1, wallThickness);
     this->cubeMesh->SetTextureScale(mazeSize, 1.f);
     this->cubeMesh->Draw();
-    this->cubeMesh->MakeCube(shaderID, mazeSize+wallThickness, 1.f+wallThickness, 0, wallThickness, wallThickness+1, mazeSize);
-    this->cubeMesh->SetTextureScale(1.f, mazeSize);
+
+    // East Wall
+    this->cubeMesh->MakeCube(shaderID, 
+        -wallLength, wallOffset, 0,
+        wallThickness, wallThickness+1, mazeSize);
+    this->cubeMesh->RotateY(90);
+    this->cubeMesh->SetTextureScale(mazeSize, 1.f);
     this->cubeMesh->Draw();
-    this->cubeMesh->MakeCube(shaderID, -mazeSize-wallThickness, 1.f+wallThickness, 0, wallThickness, wallThickness+1, mazeSize);
-    this->cubeMesh->SetTextureScale(1.f, mazeSize);
+
+    // West Wall
+    this->cubeMesh->MakeCube(shaderID, 
+        wallLength, wallOffset, 0,
+        wallThickness, wallThickness+1, mazeSize);
+    this->cubeMesh->RotateY(-90);
+    this->cubeMesh->SetTextureScale(mazeSize, 1.f);
     this->cubeMesh->Draw();
     glBindVertexArray(0);
     glFlush();

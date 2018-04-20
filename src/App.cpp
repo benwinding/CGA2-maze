@@ -27,7 +27,8 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->PlayerCam = new PlayerViewer(glm::vec3(0,0,0), this->TheMaze->GetMazeSize());
     this->Camera = PlayerCam;
 
-    this->TextureGround = new Texture("res/star_wars_trench.png");
+    this->TextureFloor = new Texture("res/star_wars_trench.png");
+    this->TextureBoundry = new Texture("res/brick.png");
     this->TextureWalls = new Texture("res/crate.png");
     this->TextureHat = new Texture("res/hat.png");
     this->NoTexture = new Texture("res/white.png");
@@ -45,6 +46,11 @@ App::~App()
     delete this->ObjCam;
     delete this->PlayerCam;
     delete this->wallsShader;
+    delete this->TextureFloor;
+    delete this->TextureBoundry;
+    delete this->TextureWalls;
+    delete this->TextureHat;
+    delete this->NoTexture;
 }
 
 void App::SetShaders()
@@ -69,12 +75,17 @@ void App::render()
     wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
 
     NoTexture->Use();
+
     if(this->TexturesOn)
-        TextureGround->Use();
-    wallsShader->setRgb("objectColor", 100, 100, 100);
+        TextureBoundry->Use();
+    wallsShader->setRgb("objectColor", 200, 80, 80);
     TheMaze->renderMazeBoundary(currentId);
-    wallsShader->setRgb("objectColor", 160, 160, 160);
+
+    if(this->TexturesOn)
+        TextureFloor->Use();
+    wallsShader->setRgb("objectColor", 100, 100, 100);
     TheMaze->renderMazeFloor(currentId);
+
     if(this->TexturesOn)
         TextureWalls->Use();
     wallsShader->setRgb("objectColor", 124, 68, 42);
