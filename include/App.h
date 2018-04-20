@@ -29,6 +29,7 @@ private:
     bool TexturesOn;
     Texture *TextureGround;
     Texture *TextureWalls;
+    Texture *TextureHat;
     Texture *NoTexture;
 
     Shader *wallsShader;

@@ -125,6 +125,8 @@ void PrintHelp()
         1 = First Person View
         2 = World View (cheating)
 
+        H = Hat on/off
+
     )V0G0N";
     if(helpActive)
         std::cout << helpScreen << std::endl;

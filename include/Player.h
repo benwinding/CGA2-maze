@@ -11,6 +11,7 @@ private:
     CubeMesh *cubeMesh;
     float turnIncrement;
     float pan, tilt;
+    bool hatEnabled;
 
     glm::ivec2 location;
     int mazeSize;
@@ -28,6 +29,7 @@ public:
     void SetLocation(glm::ivec2 newLocation);
     void SetPan(float pan);
     void SetTilt(float tilt);
+    void ToggleHat();
 
     void PanLeft();
     void PanRight();

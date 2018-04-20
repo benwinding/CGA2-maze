@@ -30,19 +30,23 @@ void Player::renderPlayer(int shaderID)
 
     // Render Player Vertical Section
     this->cubeMesh->Reset(shaderID);
-    this->cubeMesh->Translate(location3.x, 0, location3.z);
-    this->cubeMesh->RotateY(-pan);
-    this->cubeMesh->Scale(0.1, 4, 0.1);
-    this->cubeMesh->Draw();
-
-    // Render Player Direction Stick
-    this->cubeMesh->Reset(shaderID);
     this->cubeMesh->Translate(location3.x, 2, location3.z);
     this->cubeMesh->RotateY(-pan);
-    this->cubeMesh->RotateZ(-(tilt-90));
-    this->cubeMesh->Scale(0.7, 0.1, 0.6);
-    this->cubeMesh->Translate(1, 0, 0);
+    this->cubeMesh->Scale(0.1, 1, 0.1);
     this->cubeMesh->Draw();
+
+    if(this->hatEnabled)
+    {
+        // Render Player Hat
+        this->cubeMesh->Reset(shaderID);
+        this->cubeMesh->Translate(location3.x, 1, location3.z);
+        this->cubeMesh->RotateY(-pan);
+        this->cubeMesh->RotateZ(-(tilt-90+15));
+        this->cubeMesh->RotateY(-90);
+        this->cubeMesh->Translate(0, 0.9f, -0.5f);
+        this->cubeMesh->Scale(0.4f, 0.1, 0.2f);
+        this->cubeMesh->Draw();
+    }
 
     glBindVertexArray(0);
     glFlush();
@@ -62,6 +66,11 @@ void Player::SetPan(float pan)
 void Player::SetTilt(float tilt)
 {
   this->tilt = tilt;
+}
+
+void Player::ToggleHat()
+{
+  this->hatEnabled = !this->hatEnabled;
 }
 
 // Move commands

@@ -29,6 +29,7 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
 
     this->TextureGround = new Texture("res/star_wars_trench.png");
     this->TextureWalls = new Texture("res/crate.png");
+    this->TextureHat = new Texture("res/hat.png");
     this->NoTexture = new Texture("res/white.png");
 
     this->TexturesOn = true;
@@ -82,7 +83,7 @@ void App::renderWithTextures()
     wallsShader->setVec3("objectColor", 0.2f, 0.2f, 0.9f);
     TheMaze->renderWalls(currentId);
 
-    NoTexture->Use();
+    TextureHat->Use();
     wallsShader->setVec3("objectColor", 0.1f, 0.8f, 0.9f);
     ThePlayer->renderPlayer(currentId);
     wallsShader->setVec3("objectColor", 1.f, 0.1f, 0.1f);
@@ -145,6 +146,9 @@ void App::key_callback(int key, int action)
             case GLFW_KEY_T:
                 toggleTextures();
                 break;
+            case GLFW_KEY_H:
+                this->ThePlayer->ToggleHat();
+                break;
             case GLFW_KEY_UP:
                 this->MoveStraight(180);
                 break;
@@ -188,5 +192,5 @@ int App::SetWindowSize(int x, int y)
 void App::updateProjection()
 {
     float fov = (float) M_PI / 2.f;
-    this->projection = glm::perspective(fov, (float) winX / winY, 0.2f, 10000.0f );
+    this->projection = glm::perspective(fov, (float) winX / winY, 0.5f, 10000.0f );
 }    
