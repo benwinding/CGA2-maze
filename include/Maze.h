@@ -27,7 +27,8 @@ public:
     bool IsLocationWall(glm::ivec2 pos);
     bool IsLocationGoal(glm::ivec2 pos);
 
-    void renderMazeBoundaries(int shaderID);
+    void renderMazeBoundary(int shaderID);
+    void renderMazeFloor(int shaderID);
     void renderWalls(int shaderID);
     void renderGoal(int shaderID);
 

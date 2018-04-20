@@ -72,7 +72,9 @@ void App::render()
     if(this->TexturesOn)
         TextureGround->Use();
     wallsShader->setRgb("objectColor", 100, 100, 100);
-    TheMaze->renderMazeBoundaries(currentId);
+    TheMaze->renderMazeBoundary(currentId);
+    wallsShader->setRgb("objectColor", 160, 160, 160);
+    TheMaze->renderMazeFloor(currentId);
     if(this->TexturesOn)
         TextureWalls->Use();
     wallsShader->setRgb("objectColor", 124, 68, 42);
