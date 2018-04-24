@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Viewer.h"
 #include "CubeMesh.h"
+#include "DiamondMesh.h"
 #include "Texture.h"
 
 // Repsonsible Composing the program and 
@@ -18,6 +19,7 @@ private:
     int winX, winY;
 
     CubeMesh *cubeMesh;
+    DiamondMesh *diamondMesh;
 
     Maze *TheMaze;
     Player *ThePlayer;

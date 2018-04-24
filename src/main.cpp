@@ -182,7 +182,7 @@ int main (int argc, char **argv)
     }
 
     // Set OpenGL state we need for this application.
-    glClearColor(0.5F, 0.5F, 0.5F, 0.0F);
+    glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
     glEnable(GL_DEPTH_TEST);
     
     // Print program help

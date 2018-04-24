@@ -12,10 +12,12 @@
 #define DEG2RAD(x) ((x)*M_PI/180.0) 
 #define RAD2DEG(x) ((x)*180.0/M_PI) 
 
-Player::Player(CubeMesh *cubeMesh, int mazeSize)
+Player::Player(CubeMesh *cubeMesh, DiamondMesh *diamondMesh, int mazeSize)
 {
     this->mazeSize = mazeSize;
     this->cubeMesh = cubeMesh;
+    this->diamondMesh = diamondMesh;
+    this->hatEnabled = false;
     this->Reset();
 }
 
@@ -27,6 +29,13 @@ void Player::Reset()
     this->turnIncrement = 5;
 }
 
+float Player::GetPlayerHeight()
+{
+    static double startTime = glfwGetTime();
+    double nowTime = startTime - glfwGetTime();
+    return 1+0.04f*sin(nowTime);
+}
+
 void Player::renderPlayer(int shaderID)
 {
     glm::ivec3 location3 = this->GetLocation3();
@@ -34,24 +43,37 @@ void Player::renderPlayer(int shaderID)
     float tilt = this->GetTilt();
 
     // Render Player Vertical Section
-    this->cubeMesh->Reset(shaderID);
-    this->cubeMesh->Translate(location3.x, 2, location3.z);
-    this->cubeMesh->RotateY(-pan);
-    this->cubeMesh->Scale(0.1, 1, 0.1);
-    this->cubeMesh->Draw();
+    this->diamondMesh->Reset(shaderID);
+    this->diamondMesh->Translate(location3.x, this->GetPlayerHeight(), location3.z);
+    this->diamondMesh->RotateY(-pan);
+    this->diamondMesh->RotateZ(-(tilt-90+15));
+    this->diamondMesh->RotateY(-90);
+    this->diamondMesh->Translate(0, 0.9f, -0.5f);
+    this->diamondMesh->Scale(0.5f, 2, 0.5f);
+    this->diamondMesh->Draw();
 
-    if(this->hatEnabled)
-    {
-        // Render Player Hat
-        this->cubeMesh->Reset(shaderID);
-        this->cubeMesh->Translate(location3.x, 1, location3.z);
-        this->cubeMesh->RotateY(-pan);
-        this->cubeMesh->RotateZ(-(tilt-90+15));
-        this->cubeMesh->RotateY(-90);
-        this->cubeMesh->Translate(0, 0.9f, -0.5f);
-        this->cubeMesh->Scale(0.4f, 0.1, 0.2f);
-        this->cubeMesh->Draw();
-    }
+    glBindVertexArray(0);
+    glFlush();
+}
+
+void Player::renderHat(int shaderID)
+{
+    if(this->hatEnabled == false)
+        return;
+
+    glm::ivec3 location3 = this->GetLocation3();
+    float pan = this->GetPan();
+    float tilt = this->GetTilt();
+
+    // Render Player Hat
+    this->cubeMesh->Reset(shaderID);
+    this->cubeMesh->Translate(location3.x, this->GetPlayerHeight(), location3.z);
+    this->cubeMesh->RotateY(-pan);
+    this->cubeMesh->RotateZ(-(tilt-90+15));
+    this->cubeMesh->RotateY(-90);
+    this->cubeMesh->Translate(0, 0.9f, -0.5f);
+    this->cubeMesh->Scale(0.4f, 0.1, 0.2f);
+    this->cubeMesh->Draw();
 
     glBindVertexArray(0);
     glFlush();
@@ -105,13 +127,13 @@ void Player::TiltDown()
 }
 
 // Getters
-glm::ivec3 Player::GetLocation3()
+glm::vec3 Player::GetLocation3()
 {
     float i = this->location[0];
     float j = this->location[1];
     float x = i*2 - mazeSize + 1;
     float z = j*2 - mazeSize + 1;
-    return glm::vec3(x, 1, z);
+    return glm::vec3((int)x, this->GetPlayerHeight(), (int)z);
 }
 
 glm::vec3 Player::GetDirection3()

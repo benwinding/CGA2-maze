@@ -9,15 +9,16 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "Maze.h"
+#include "DiamondMesh.h"
 #include "App.h"
 #include "Player.h"
 
 #define DEG2RAD(x) ((x)*M_PI/180.0) 
 
-Maze::Maze(CubeMesh *cubeMesh, Player *thePlayer)
+Maze::Maze(CubeMesh *cubeMesh, DiamondMesh *diamondMesh)
 {
     this->cubeMesh = cubeMesh;
-    this->thePlayer = thePlayer;
+    this->diamondMesh = diamondMesh;
 }
 
 void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
@@ -116,6 +117,8 @@ void Maze::renderWalls(int shaderID)
 
 void Maze::renderGoal(int shaderID)
 {
+    static double startTime = glfwGetTime();
+    double nowTime = startTime - glfwGetTime();
     // Render Current Maze Layout
     int sizeI = this->gridRows;
     int sizeJ = this->gridCols;
@@ -128,10 +131,11 @@ void Maze::renderGoal(int shaderID)
             {
                 float x = i*2 - mazeSize + 1;
                 float z = j*2 - mazeSize + 1;
-                this->cubeMesh->Reset(shaderID);
-                this->cubeMesh->Translate(x, 1, z);
-                this->cubeMesh->Scale(0.2, 10, 0.2);
-                this->cubeMesh->Draw();
+                this->diamondMesh->Reset(shaderID);
+                this->diamondMesh->Translate(x, 7+2*sin(nowTime), z);
+                this->diamondMesh->Scale(1, 4, 1);
+                this->diamondMesh->RotateY(nowTime*20.f);
+                this->diamondMesh->Draw();
             }
     	}
     }

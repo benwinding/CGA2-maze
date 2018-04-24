@@ -48,8 +48,8 @@ PlayerViewer::PlayerViewer(glm::vec3 eye, int mazeSize)
 
 void PlayerViewer::update(Player &thePlayer)
 {
-    glm::ivec3 location = thePlayer.GetLocation3();
-    glm::vec3 at(location.x, 1.0f, location.z);
+    glm::vec3 location = thePlayer.GetLocation3();
+    glm::vec3 at(location.x, location.y, location.z);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
     glm::vec3 cameraFocus = thePlayer.GetDirection3();
 

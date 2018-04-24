@@ -11,6 +11,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "App.h"
+#include "DiamondMesh.h"
 #include "Shader.h"
 
 App::App(int winX, int winY, int mazeSize, int* mazeConfig)
@@ -18,8 +19,9 @@ App::App(int winX, int winY, int mazeSize, int* mazeConfig)
     this->SetWindowSize(winX, winY);
     
     this->cubeMesh = new CubeMesh();
-    this->ThePlayer = new Player(this->cubeMesh, mazeSize);
-    this->TheMaze = new Maze(this->cubeMesh, this->ThePlayer);
+    this->diamondMesh = new DiamondMesh();
+    this->ThePlayer = new Player(this->cubeMesh, this->diamondMesh, mazeSize);
+    this->TheMaze = new Maze(this->cubeMesh, this->diamondMesh);
     
     this->TheMaze->SetUpMaze(mazeSize, mazeSize, mazeConfig);
 
@@ -91,25 +93,26 @@ void App::render()
 
     NoTexture->Use();
 
-    if(this->TexturesOn)
-        TextureBoundry->Use();
+    if(this->TexturesOn) TextureBoundry->Use();
     wallsShader->setRgb("material.colour", 200, 80, 80);
     TheMaze->renderMazeBoundary(currentId);
 
-    if(this->TexturesOn)
-        TextureFloor->Use();
+    if(this->TexturesOn) TextureFloor->Use();
     wallsShader->setRgb("material.colour", 100, 100, 100);
     TheMaze->renderMazeFloor(currentId);
 
-    if(this->TexturesOn)
-        TextureWalls->Use();
+    if(this->TexturesOn) TextureWalls->Use();
     wallsShader->setRgb("material.colour", 124, 68, 42);
     TheMaze->renderWalls(currentId);
 
-    if(this->TexturesOn)
-        TextureHat->Use();
+    if(this->TexturesOn) TextureHat->Use();
     wallsShader->setRgb("material.colour", 0, 255, 0);
-    ThePlayer->renderPlayer(currentId);
+    ThePlayer->renderHat(currentId);
+
+    NoTexture->Use();
+    if(this->Camera == ObjCam)
+        ThePlayer->renderPlayer(currentId);
+
     NoTexture->Use();
     wallsShader->setRgb("material.colour", 255, 0, 0);
     TheMaze->renderGoal(currentId);

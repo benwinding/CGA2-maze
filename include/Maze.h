@@ -6,6 +6,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "CubeMesh.h"
+#include "DiamondMesh.h"
 #include "Player.h"
 
 class Maze
@@ -16,13 +17,14 @@ private:
     int mazeSize;
     float mazeY;
     float wallThickness;
+
     CubeMesh *cubeMesh;
-    Player *thePlayer;
+    DiamondMesh *diamondMesh;
 
     int getLocationValue(glm::ivec2 pos);
 
 public:
-    Maze(CubeMesh *cubeMesh, Player *thePlayer);
+    Maze(CubeMesh *cubeMesh, DiamondMesh *diamondMesh);
     void SetUpMaze(int gridRows, int gridCols, int* mazeLayout);
     bool IsLocationWall(glm::ivec2 pos);
     bool IsLocationGoal(glm::ivec2 pos);
