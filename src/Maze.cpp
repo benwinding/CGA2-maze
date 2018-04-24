@@ -122,6 +122,7 @@ void Maze::renderGoal(int shaderID)
     // Render Current Maze Layout
     int sizeI = this->gridRows;
     int sizeJ = this->gridCols;
+    float goalHeight = 7 + 2*sin(nowTime) + 3*cos(nowTime*0.9f);
     for(int i=0; i<sizeI; i++)
     {
     	for (int j=0; j<sizeJ; ++j)
@@ -132,7 +133,7 @@ void Maze::renderGoal(int shaderID)
                 float x = i*2 - mazeSize + 1;
                 float z = j*2 - mazeSize + 1;
                 this->diamondMesh->Reset(shaderID);
-                this->diamondMesh->Translate(x, 7+2*sin(nowTime), z);
+                this->diamondMesh->Translate(x, goalHeight, z);
                 this->diamondMesh->Scale(1, 4, 1);
                 this->diamondMesh->RotateY(nowTime*20.f);
                 this->diamondMesh->Draw();
