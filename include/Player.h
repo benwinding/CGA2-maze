@@ -23,6 +23,7 @@ public:
 
     glm::ivec3 GetLocation3();
     glm::ivec2 GetGridLocation();
+    glm::vec3 GetDirection3();
     float GetPan();
     float GetTilt();
 

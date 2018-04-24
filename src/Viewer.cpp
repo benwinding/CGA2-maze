@@ -1,15 +1,5 @@
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 #include "Viewer.h"
 #include "glm/gtc/matrix_transform.hpp"
-
-#define DEG2RAD(x) ((x)*M_PI/180.0) 
-#define RAD2DEG(x) ((x)*180.0/M_PI) 
 
 Viewer::Viewer( glm::vec3 eye )
 {
@@ -59,16 +49,9 @@ PlayerViewer::PlayerViewer(glm::vec3 eye, int mazeSize)
 void PlayerViewer::update(Player &thePlayer)
 {
     glm::ivec3 location = thePlayer.GetLocation3();
-    float pan = DEG2RAD(thePlayer.GetPan());
-    float tilt = DEG2RAD(thePlayer.GetTilt());
-
-    float camX = sin(tilt)*cos(pan);
-    float camY = cos(tilt);
-    float camZ = sin(tilt)*sin(pan);
-
     glm::vec3 at(location.x, 1.0f, location.z);
     glm::vec3 up(0.0f, 1.0f, 0.0f);
-    glm::vec3 cameraFocus(camX, camY, camZ);
+    glm::vec3 cameraFocus = thePlayer.GetDirection3();
 
     glm::vec3 lookBoth = at + cameraFocus;
 

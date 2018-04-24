@@ -7,6 +7,11 @@
 
 #include "Player.h"
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+#define DEG2RAD(x) ((x)*M_PI/180.0) 
+#define RAD2DEG(x) ((x)*180.0/M_PI) 
+
 Player::Player(CubeMesh *cubeMesh, int mazeSize)
 {
     this->mazeSize = mazeSize;
@@ -107,6 +112,18 @@ glm::ivec3 Player::GetLocation3()
     float x = i*2 - mazeSize + 1;
     float z = j*2 - mazeSize + 1;
     return glm::vec3(x, 1, z);
+}
+
+glm::vec3 Player::GetDirection3()
+{
+    float pan = DEG2RAD(this->GetPan());
+    float tilt = DEG2RAD(this->GetTilt());
+
+    float camX = sin(tilt)*cos(pan);
+    float camY = cos(tilt);
+    float camZ = sin(tilt)*sin(pan);
+
+    return glm::vec3(camX, camY, camZ);
 }
 
 glm::ivec2 Player::GetGridLocation()

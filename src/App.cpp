@@ -72,31 +72,46 @@ void App::render()
     wallsShader->use();
     wallsShader->setMat4("projection", this->projection);
     wallsShader->setMat4("view", Camera->getViewMtx());
-    wallsShader->setVec3("lightPos", ThePlayer->GetLocation3());
+
+    wallsShader->setRgb("material.colour", 200, 200, 200);
+    wallsShader->setInt("material.diffuse", 0);
+    wallsShader->setInt("material.specular", 1);
+    wallsShader->setFloat("material.shininess", 32.f);
+
+    wallsShader->setVec3("light.position", ThePlayer->GetLocation3());
+    wallsShader->setVec3("light.direction", ThePlayer->GetDirection3());
+    wallsShader->setFloat("light.cutOff", glm::cos(glm::radians(22.5f)));
+    wallsShader->setFloat("light.outerCutOff", 0);
+    wallsShader->setRgb("light.ambient", 125, 125, 125);
+    wallsShader->setRgb("light.diffuse", 125, 125, 125);
+    wallsShader->setRgb("light.specular", 125, 125, 125);
+    wallsShader->setFloat("light.constant", 1.0f);
+    wallsShader->setFloat("light.linear", 0.09f);
+    wallsShader->setFloat("light.quadratic", 0.032f);
 
     NoTexture->Use();
 
     if(this->TexturesOn)
         TextureBoundry->Use();
-    wallsShader->setRgb("objectColor", 200, 80, 80);
+    wallsShader->setRgb("material.colour", 200, 80, 80);
     TheMaze->renderMazeBoundary(currentId);
 
     if(this->TexturesOn)
         TextureFloor->Use();
-    wallsShader->setRgb("objectColor", 100, 100, 100);
+    wallsShader->setRgb("material.colour", 100, 100, 100);
     TheMaze->renderMazeFloor(currentId);
 
     if(this->TexturesOn)
         TextureWalls->Use();
-    wallsShader->setRgb("objectColor", 124, 68, 42);
+    wallsShader->setRgb("material.colour", 124, 68, 42);
     TheMaze->renderWalls(currentId);
 
     if(this->TexturesOn)
         TextureHat->Use();
-    wallsShader->setRgb("objectColor", 0, 255, 0);
+    wallsShader->setRgb("material.colour", 0, 255, 0);
     ThePlayer->renderPlayer(currentId);
     NoTexture->Use();
-    wallsShader->setRgb("objectColor", 255, 0, 0);
+    wallsShader->setRgb("material.colour", 255, 0, 0);
     TheMaze->renderGoal(currentId);
 }
 

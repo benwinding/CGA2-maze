@@ -98,29 +98,39 @@ void Shader::use()
     glUseProgram(this->shaderId);
 }
 
+void Shader::setMat4(std::string uniformName, const glm::mat4 &mat)
+{
+    glUniformMatrix4fv(this->getHandle(uniformName), 1, GL_FALSE, &mat[0][0]);
+}
+
 void Shader::setVec3(std::string uniformName, const glm::vec3 &vec)
 {
-	glUniform3fv(this->getHandle(uniformName), 1, &vec[0]); 
+    glUniform3fv(this->getHandle(uniformName), 1, &vec[0]); 
 }
 
 void Shader::setVec3(std::string uniformName, float x, float y, float z)
 {
-	glUniform3f(this->getHandle(uniformName), x, y, z);
+    glUniform3f(this->getHandle(uniformName), x, y, z);
 }
 
 float rgbNorm(int rgbVal)
 {
-	return (rgbVal*1.0f/255.0f); 
+    return (rgbVal*1.0f/255.0f); 
 }
 
 void Shader::setRgb(std::string uniformName, int r, int g, int b)
 {
-	glUniform3f(this->getHandle(uniformName), rgbNorm(r), rgbNorm(g), rgbNorm(b));
+    glUniform3f(this->getHandle(uniformName), rgbNorm(r), rgbNorm(g), rgbNorm(b));
 }
 
-void Shader::setMat4(std::string uniformName, const glm::mat4 &mat)
+void Shader::setFloat(std::string uniformName, float x)
 {
-	glUniformMatrix4fv(this->getHandle(uniformName), 1, GL_FALSE, &mat[0][0]);
+    glUniform1f(this->getHandle(uniformName), x);
+}
+
+void Shader::setInt(std::string uniformName, int x)
+{
+    glUniform1i(this->getHandle(uniformName), x);
 }
 
 int Shader::getHandle(std::string uniformName)
