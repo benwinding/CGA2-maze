@@ -39,6 +39,10 @@ void main(void)
     // check if lighting is inside the spotlight cone
     float theta = dot(lightDir, normalize(-light.direction)); 
     
+    // attenuation
+    float distance    = length(light.position - FragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+
     if(theta > light.cutOff) // remember that we're working with angles as cosines instead of degrees so a '>' is used.
     {    
         // ambient
@@ -55,10 +59,6 @@ void main(void)
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
         vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
         
-        // attenuation
-        float distance    = length(light.position - FragPos);
-        float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
-
         diffuse   *= attenuation;
         specular *= attenuation;   
             
@@ -67,8 +67,6 @@ void main(void)
     }
     else 
     {
-        float distance    = length(light.position - FragPos);
-        float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
         FragColor = attenuation * vec4(light.ambient * material.colour * texture(material.diffuse, TexCoords).rgb, 1.0);
     }
 }
