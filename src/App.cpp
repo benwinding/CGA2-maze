@@ -80,12 +80,12 @@ void App::render()
 
     wallsShader->setVec3("light.position", ThePlayer->GetLocation3());
     wallsShader->setVec3("light.direction", ThePlayer->GetDirection3());
-    wallsShader->setFloat("light.cutOff", glm::cos(glm::radians(22.5f)));
-    wallsShader->setFloat("light.outerCutOff", 0);
+    wallsShader->setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+    wallsShader->setFloat("light.outerCutOff", glm::cos(glm::radians(25.5f)));
     wallsShader->setRgb("light.ambient", 125, 125, 125);
     wallsShader->setRgb("light.diffuse", 125, 125, 125);
     wallsShader->setRgb("light.specular", 125, 125, 125);
-    wallsShader->setFloat("light.constant", 1.0f);
+    wallsShader->setFloat("light.constant", 0.80f);
     wallsShader->setFloat("light.linear", 0.09f);
     wallsShader->setFloat("light.quadratic", 0.032f);
 
@@ -195,6 +195,6 @@ int App::SetWindowSize(int x, int y)
 
 void App::updateProjection()
 {
-    float fov = 75;
+    float fov = 85;
     this->projection = glm::perspective(glm::radians(fov), (float) winX / winY, 0.5f, 10000.0f );
 }
