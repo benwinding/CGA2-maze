@@ -157,7 +157,7 @@ int main (int argc, char **argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create the window and OpenGL context
-    window = glfwCreateWindow(winX, winY, "Assignment 2: Star Wars Trench Run", NULL, NULL);
+    window = glfwCreateWindow(winX, winY, "Assignment 2: Maze", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

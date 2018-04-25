@@ -7,7 +7,6 @@
 
 #include "CubeMesh.h"
 #include "DiamondMesh.h"
-#include "Player.h"
 
 class Maze
 {
