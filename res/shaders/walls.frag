@@ -12,6 +12,8 @@ struct Material {
 }; 
 
 struct Light {
+    int isDirectional;  
+
     vec3 position;  
     vec3 direction;
     float cutOff;
@@ -26,13 +28,16 @@ struct Light {
     float quadratic;
 };
 
+#define MAX_LIGHTS 10
+
+uniform int numLights;
 uniform vec3 viewPos;
 uniform Material material;
-uniform Light light;
+uniform Light allLights[MAX_LIGHTS];
 
 out vec4 FragColor;
 
-void main(void)
+vec3 ApplySpotLight(Light light, Material material)
 {
     vec3 lightDir = normalize(light.position - FragPos);
           
@@ -63,8 +68,44 @@ void main(void)
     
     diffuse  *= attenuation;
     specular *= attenuation;   
-    ambient  *= attenuation; 
+    ambient  *= attenuation;
 
     vec3 result = ambient + diffuse + specular;
-    FragColor = vec4(result, 1.0);
+    return result;
+}
+
+vec3 ApplyPointLight(Light light, Material material)
+{
+    vec3 lightDir = normalize(light.position - FragPos);
+          
+    // ambient
+    vec3 ambient = material.colour * light.ambient * texture(material.diffuse, TexCoords).rgb;
+    
+    // diffuse 
+    vec3 norm = normalize(Normal);
+    vec3 diffuse = light.diffuse * norm * texture(material.diffuse, TexCoords).rgb;  
+   
+    // attenuation
+    float distance    = length(light.position - FragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    
+    diffuse  *= attenuation;
+    ambient  *= attenuation;
+
+    vec3 result = ambient + diffuse;
+    return result;
+}
+
+void main(void)
+{
+    vec3 linearColor = vec3(0);
+    for(int i = 0; i < numLights; ++i){
+        Light light = allLights[i];
+        if(light.isDirectional == 1)
+            linearColor += ApplySpotLight(light, material);
+        else
+            linearColor += ApplyPointLight(light, material);
+    }
+
+    FragColor = vec4(linearColor, 1.0);
 }

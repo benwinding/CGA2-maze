@@ -80,16 +80,28 @@ void App::render()
     wallsShader->setInt("material.specular", 1);
     wallsShader->setFloat("material.shininess", 32.f);
 
-    wallsShader->setVec3("light.position", ThePlayer->GetLocation3());
-    wallsShader->setVec3("light.direction", ThePlayer->GetDirection3());
-    wallsShader->setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-    wallsShader->setFloat("light.outerCutOff", glm::cos(glm::radians(25.5f)));
-    wallsShader->setRgb("light.ambient", 125, 125, 125);
-    wallsShader->setRgb("light.diffuse", 125, 125, 125);
-    wallsShader->setRgb("light.specular", 125, 125, 125);
-    wallsShader->setFloat("light.constant", 0.80f);
-    wallsShader->setFloat("light.linear", 0.09f);
-    wallsShader->setFloat("light.quadratic", 0.032f);
+    wallsShader->setInt("numLights", 2);
+    std::string light1 = "allLights[0].";
+    wallsShader->setInt(light1 + "isDirectional", 1);
+    wallsShader->setVec3(light1 + "position", ThePlayer->GetLocation3());
+    wallsShader->setVec3(light1 + "direction", ThePlayer->GetDirection3());
+    wallsShader->setFloat(light1 + "cutOff", glm::cos(glm::radians(12.5f)));
+    wallsShader->setFloat(light1 + "outerCutOff", glm::cos(glm::radians(25.5f)));
+    wallsShader->setRgb(light1 + "ambient", 125, 125, 125);
+    wallsShader->setRgb(light1 + "diffuse", 125, 125, 125);
+    wallsShader->setRgb(light1 + "specular", 125, 125, 125);
+    wallsShader->setFloat(light1 + "constant", 0.80f);
+    wallsShader->setFloat(light1 + "linear", 0.09f);
+    wallsShader->setFloat(light1 + "quadratic", 0.032f);
+
+    std::string light2 = "allLights[1].";
+    wallsShader->setInt(light2 + "isDirectional", 0);
+    wallsShader->setVec3(light2 + "position", TheMaze->GetGoalLocation3());
+    wallsShader->setRgb(light2 + "ambient", 130, 130, 130);
+    wallsShader->setRgb(light2 + "diffuse", 100, 10, 10);
+    wallsShader->setFloat(light2 + "constant", 0.80f);
+    wallsShader->setFloat(light2 + "linear", 0.09f);
+    wallsShader->setFloat(light2 + "quadratic", 0.032f);
 
     NoTexture->Use();
 

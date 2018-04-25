@@ -33,6 +33,19 @@ void Maze::SetUpMaze(int gridRows, int gridCols, int* mazeLayout)
     this->mazeSize = gridCols;
     this->mazeY = cubeSize * wallThickness;
 
+    int sizeI = this->gridRows;
+    int sizeJ = this->gridCols;
+    for(int i=0; i<sizeI; i++)
+    {
+        for (int j=0; j<sizeJ; ++j)
+        {
+            int gridValue = mazeLayout[j*sizeI+i];
+            if(gridValue == 2) {
+                this->setGoalLocation(i, j);
+            }
+        }
+    }
+
     this->mazeLayout = mazeLayout;
 }
 
@@ -103,10 +116,9 @@ void Maze::renderWalls(int shaderID)
         {
             int gridValue = mazeLayout[j*sizeI+i];
             if(gridValue == 1) {
-                float x = i*2 - mazeSize + 1;
-                float z = j*2 - mazeSize + 1;
+                glm::vec3 gridLocation = getGridLocation(i, j);
                 this->cubeMesh->Reset(shaderID);
-                this->cubeMesh->Translate(x, 1, z);
+                this->cubeMesh->Translate(gridLocation.x, 1, gridLocation.z);
                 this->cubeMesh->Draw();
             }
         }
@@ -115,31 +127,25 @@ void Maze::renderWalls(int shaderID)
     glFlush();
 }
 
+glm::vec3 Maze::getGridLocation(int i, int j)
+{
+    float x = i*2 - mazeSize + 1;
+    float z = j*2 - mazeSize + 1;
+    return glm::vec3(x, 1, z);
+}
+
 void Maze::renderGoal(int shaderID)
 {
     static double startTime = glfwGetTime();
     double nowTime = startTime - glfwGetTime();
     // Render Current Maze Layout
-    int sizeI = this->gridRows;
-    int sizeJ = this->gridCols;
-    float goalHeight = 7 + 2*sin(nowTime) + 3*cos(nowTime*0.9f);
-    for(int i=0; i<sizeI; i++)
-    {
-    	for (int j=0; j<sizeJ; ++j)
-    	{
-            int gridValue = mazeLayout[j*sizeI+i];
-            if(gridValue == 2)
-            {
-                float x = i*2 - mazeSize + 1;
-                float z = j*2 - mazeSize + 1;
-                this->diamondMesh->Reset(shaderID);
-                this->diamondMesh->Translate(x, goalHeight, z);
-                this->diamondMesh->Scale(1, 4, 1);
-                this->diamondMesh->RotateY(nowTime*20.f);
-                this->diamondMesh->Draw();
-            }
-    	}
-    }
+    glm::vec3 goalLoaction = this->GetGoalLocation3();
+    this->diamondMesh->Reset(shaderID);
+    this->diamondMesh->Translate(goalLoaction.x, goalLoaction.y, goalLoaction.z);
+    this->diamondMesh->Scale(1, 4, 1);
+    this->diamondMesh->RotateY(nowTime*20.f);
+    this->diamondMesh->Draw();
+
 	glBindVertexArray(0);
 	glFlush();
 }
@@ -169,6 +175,21 @@ bool Maze::IsLocationWall(glm::ivec2 pos)
 bool Maze::IsLocationGoal(glm::ivec2 pos)
 {
     return getLocationValue(pos) == 2;
+}
+
+void Maze::setGoalLocation(int i, int j)
+{
+    this->goalLoaction = getGridLocation(i, j);
+}
+
+glm::vec3 Maze::GetGoalLocation3()
+{
+    static double startTime = glfwGetTime();
+    double nowTime = startTime - glfwGetTime();
+
+    float goalHeight = 7 + 2*sin(nowTime) + 3*cos(nowTime*0.9f);
+    this->goalLoaction.y = goalHeight;
+    return this->goalLoaction;
 }
 
 int Maze::GetMazeSize()

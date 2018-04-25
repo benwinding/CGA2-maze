@@ -22,6 +22,8 @@ private:
     DiamondMesh *diamondMesh;
 
     int getLocationValue(glm::ivec2 pos);
+    glm::vec3 getGridLocation(int i, int j);
+    glm::vec3 goalLoaction;
 
 public:
     Maze(CubeMesh *cubeMesh, DiamondMesh *diamondMesh);
@@ -35,6 +37,8 @@ public:
     void renderGoal(int shaderID);
 
     int GetMazeSize();
+    void setGoalLocation(int i, int j);
+    glm::vec3 GetGoalLocation3();
 };
 
 #endif
