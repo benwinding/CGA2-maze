@@ -9,14 +9,15 @@
 **************************************************/
 
 #include <string>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 class Shader
 {
 	int shaderId;
 	int getHandle(std::string uniformName);
-	int CompileShader(const char *ShaderPath, const uint ShaderID);
-	uint LoadShaders(std::string vertex_file_path, std::string fragment_file_path);
+	int CompileShader(const char *ShaderPath, const GLuint ShaderID);
+	GLuint LoadShaders(std::string vertex_file_path, std::string fragment_file_path);
 public:
 	Shader(std::string vertex_file_path, std::string fragment_file_path);
 	void setMat4(std::string uniformName, const glm::mat4 &mat);

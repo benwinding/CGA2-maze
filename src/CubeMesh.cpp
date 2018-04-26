@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <iostream>
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include <GL/glew.h>
+#include <cmath>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -13,8 +12,6 @@
 #define CUBE_NUM_VERTICES 36
 #define CUBE_NUM_TRIS 12
 #define VALS_PER_VERT 8
-
-#define DEG2RAD(x) ((x)*M_PI/180.0) 
 
 CubeMesh::CubeMesh()
 {
@@ -46,19 +43,19 @@ void CubeMesh::Scale(float sx, float sy, float sz)
 
 void CubeMesh::RotateX(float rx)
 {
-    float rRads = DEG2RAD(rx);
+    float rRads = glm::radians(rx);
     this->model = glm::rotate(this->model, rRads, glm::vec3(1, 0, 0));
 }
 
 void CubeMesh::RotateY(float ry)
 {
-    float rRads = DEG2RAD(ry);
+    float rRads = glm::radians(ry);
     this->model = glm::rotate(this->model, rRads, glm::vec3(0, 1, 0));
 }
 
 void CubeMesh::RotateZ(float rz)
 {
-    float rRads = DEG2RAD(rz);
+    float rRads = glm::radians(rz);
     this->model = glm::rotate(this->model, rRads, glm::vec3(0, 0, 1));
 }
 

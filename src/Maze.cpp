@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include "glm/glm.hpp"
@@ -12,8 +11,6 @@
 #include "DiamondMesh.h"
 #include "App.h"
 #include "Player.h"
-
-#define DEG2RAD(x) ((x)*M_PI/180.0) 
 
 Maze::Maze(CubeMesh *cubeMesh, DiamondMesh *diamondMesh)
 {

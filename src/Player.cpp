@@ -1,3 +1,4 @@
+#include <cmath>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -5,12 +6,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "Player.h"
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-#define DEG2RAD(x) ((x)*M_PI/180.0) 
-#define RAD2DEG(x) ((x)*180.0/M_PI) 
+#include "Player.h"
 
 Player::Player(CubeMesh *cubeMesh, DiamondMesh *diamondMesh, int mazeSize)
 {
@@ -138,8 +135,8 @@ glm::vec3 Player::GetLocation3()
 
 glm::vec3 Player::GetDirection3()
 {
-    float pan = DEG2RAD(this->GetPan());
-    float tilt = DEG2RAD(this->GetTilt());
+    float pan = glm::radians(this->GetPan());
+    float tilt = glm::radians(this->GetTilt());
 
     float camX = sin(tilt)*cos(pan);
     float camY = cos(tilt);
